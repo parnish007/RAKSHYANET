@@ -1,0 +1,91 @@
+{
+  "nodes": [
+    {
+      "id": "kathmandu_hub",
+      "group": 1,
+      "size": 8,
+      "status": "active",
+      "messages": 10
+    },
+    {
+      "id": "dhulikhel_relay",
+      "group": 1,
+      "size": 8,
+      "status": "active",
+      "messages": 10
+    },
+    {
+      "id": "panauti_relay",
+      "group": 1,
+      "size": 8,
+      "status": "active",
+      "messages": 10
+    },
+    {
+      "id": "banepa_relay",
+      "group": 1,
+      "size": 8,
+      "status": "active",
+      "messages": 10
+    },
+    {
+      "id": "khopasi_relay",
+      "group": 1,
+      "size": 8,
+      "status": "active",
+      "messages": 10
+    }
+  ],
+  "links": [
+    {
+      "source": "dhulikhel_relay",
+      "target": "kathmandu_hub",
+      "value": 3
+    },
+    {
+      "source": "kathmandu_hub",
+      "target": "panauti_relay",
+      "value": 2
+    },
+    {
+      "source": "banepa_relay",
+      "target": "kathmandu_hub",
+      "value": 1
+    },
+    {
+      "source": "kathmandu_hub",
+      "target": "khopasi_relay",
+      "value": 3
+    },
+    {
+      "source": "dhulikhel_relay",
+      "target": "panauti_relay",
+      "value": 3
+    },
+    {
+      "source": "banepa_relay",
+      "target": "dhulikhel_relay",
+      "value": 1
+    },
+    {
+      "source": "dhulikhel_relay",
+      "target": "khopasi_relay",
+      "value": 1
+    },
+    {
+      "source": "banepa_relay",
+      "target": "panauti_relay",
+      "value": 4
+    },
+    {
+      "source": "khopasi_relay",
+      "target": "panauti_relay",
+      "value": 1
+    },
+    {
+      "source": "banepa_relay",
+      "target": "khopasi_relay",
+      "value": 2
+    }
+  ]
+}

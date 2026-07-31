@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "scenario_id": "nepalgunj-hospital-eastwest-closure",
+  "title": "Nepalgunj hospital surge with east-west closure",
+  "description": "A simulated hospital surge receives a baseline plan before flooding blocks the Bharatpur-Nepalgunj east-west corridor.",
+  "simulated": true,
+  "expected_final_status": "approved",
+  "timeline": [
+    {
+      "t_seconds": 0,
+      "step_id": "initial-evidence",
+      "event_type": "evidence_report",
+      "evidence": [
+        {
+          "evidence_id": "mock-nepalgunj-hospital-001",
+          "source_category": "health",
+          "source_name": "Nepalgunj Hospital Exercise Desk",
+          "source_identifier": "mock://nepalgunj/hospital/001",
+          "freshness_minutes": 3,
+          "reliability": 0.91,
+          "text": "Simulated report: Nepalgunj hospital is receiving flood casualties and urgently requests medical kits, first aid, water, food, and blankets.",
+          "reported_latitude": 28.05,
+          "reported_longitude": 81.6167
+        },
+        {
+          "evidence_id": "mock-nepalgunj-redcross-002",
+          "source_category": "verified_ngo",
+          "source_name": "Nepal Red Cross Banke Exercise Desk",
+          "source_identifier": "mock://nepalgunj/redcross/002",
+          "freshness_minutes": 8,
+          "reliability": 0.87,
+          "text": "Simulated Red Cross update corroborates flooding and medical pressure in Nepalgunj while field teams verify the final affected-population count."
+        }
+      ],
+      "expectation": {
+        "analysis_needs_human_review": true
+      }
+    },
+    {
+      "t_seconds": 30,
+      "step_id": "baseline-plan",
+      "event_type": "optimization_requested",
+      "expectation": {
+        "run_status": "awaiting_approval",
+        "route_feasible": true,
+        "minimum_route_count": 1,
+        "child_run": false
+      }
+    },
+    {
+      "t_seconds": 195,
+      "step_id": "sudden-eastwest-closure",
+      "event_type": "road_block_report",
+      "evidence": [
+        {
+          "evidence_id": "mock-nepalgunj-road-003",
+          "source_category": "field_transport",
+          "source_name": "Simulated East-West Highway Desk",
+          "source_identifier": "mock://nepalgunj/road/003",
+          "freshness_minutes": 1,
+          "reliability": 0.94,
+          "text": "Simulated breaking report: flood water has blocked the east-west road corridor between Bharatpur and Nepalgunj. Ground vehicles require alternate graph paths.",
+          "gap_target": "Current road access"
+        }
+      ],
+      "blocked_edge_ids": [
+        "east_west_bharatpur_nepalgunj"
+      ],
+      "reason": "Simulated flooding closes the Bharatpur-Nepalgunj east-west corridor.",
+      "expectation": {
+        "run_status": "awaiting_approval",
+        "route_feasible": true,
+        "minimum_route_count": 1,
+        "child_run": true,
+        "blocked_edges_active": [
+          "east_west_bharatpur_nepalgunj"
+        ]
+      }
+    },
+    {
+      "t_seconds": 250,
+      "step_id": "assign-independent-source",
+      "event_type": "evidence_disposition",
+      "question_index": 0,
+      "disposition_status": "assigned",
+      "owner": "Banke field verification team",
+      "reason": "The verification team will obtain an independent hospital and highway status report.",
+      "expectation": {
+        "question_status": "assigned"
+      }
+    },
+    {
+      "t_seconds": 315,
+      "step_id": "approve-alternate-plan",
+      "event_type": "review_decision",
+      "decision": "approve",
+      "reviewer": "mock-lumbini-coordinator",
+      "reason": "Simulated reviewer verified the blocked-edge exclusion, alternate feasible routes, resources, and evidence ownership.",
+      "expectation": {
+        "decision_status": "approved"
+      }
+    }
+  ]
+}

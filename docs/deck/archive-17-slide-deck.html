@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>RakshyaNet — Build With Gemma: Margadarshan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="bar"></div>
+<div id="stage">
+
+<!-- 01 ─ Title ─────────────────────────────────────────────────────── -->
+<section class="slide art hero-slide" data-t="Title">
+  <div class="hero-canvas" data-hero="title" aria-hidden="true"></div>
+  <div class="hero-copy">
+    <img src="images/logo.png" alt="" data-r="1"
+         style="width:104px;height:104px;object-fit:contain;margin-bottom:26px"
+         onerror="this.style.display='none'" />
+    <h1 data-r="2">RakshyaNet</h1>
+    <p data-r="3" class="hero-tag">
+      Gemma reads the contradictions.<br />
+      The engine finds the road.<br />
+      A human signs it off.
+    </p>
+    <div class="hero-meta" data-r="4">
+      <span class="mono">Route Intelligence</span>
+      <i></i>
+      <span class="mono">gemma-4-26b-a4b-it</span>
+      <i></i>
+      <span class="mono">native function calling</span>
+    </div>
+  </div>
+  <div class="hero-legend" data-r="5">
+    <span><b class="dot terra"></b>evidence signals converging</span>
+    <span><b class="dot rust"></b>the decision point</span>
+  </div>
+</section>
+
+<!-- 02 - Problem: allocation -->
+<section class="slide" data-t="Problem - allocation">
+  <div class="hd">
+    <div class="rule"></div>
+    <h2 data-r="1">In 2015, some districts got too much.<br />Others got nothing for days.</h2>
+  </div>
+  <div class="body">
+    <div class="grow" data-r="2" style="display:flex;flex-direction:column;justify-content:center;gap:28px">
+      <p style="font-size:25px;max-width:42ch">
+        OCHA's review of the earthquake response found that communication and
+        logistics difficulties, with a centralised approach, left many rural
+        communities <strong>without support for days</strong> - while collapsed
+        bridges and blocked passes delayed the convoys meant for them.
+      </p>
+      <p style="font-size:25px;max-width:42ch;color:#2a1e17">
+        The supplies existed. They reached the wrong valleys.
+      </p>
+    </div>
+    <div class="rail" style="width:430px;flex:0 0 430px;justify-content:center">
+      <div class="card" data-r="3">
+        <div class="mono" style="font-size:54px;color:#8f4426;line-height:1">days</div>
+        <div class="sub" style="margin-top:6px">before some communities were reached</div>
+      </div>
+      <div class="card" data-r="4">
+        <div class="mono" style="font-size:54px;color:#c2673b;line-height:1">4</div>
+        <div class="sub" style="margin-top:6px">helicopters, for the whole country</div>
+      </div>
+      <p class="cap" data-r="5" style="line-height:1.6">
+        Not a scarcity problem. An allocation problem.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 03 - Problem: the information underneath it -->
+<section class="slide" data-t="Problem - information">
+  <div class="hd">
+    <div class="rule"></div>
+    <h2 data-r="1">And you cannot allocate what you cannot establish</h2>
+    <p data-r="2" style="margin-top:16px;font-size:23px;max-width:72ch">
+      Twenty minutes into a landslide, a dispatcher has three reports. Each one is
+      credible. They do not agree.
+    </p>
+  </div>
+  <div class="body col">
+    <div class="grow">
+      <svg class="fig" viewBox="0 0 1420 330" role="img"
+           aria-label="Two credible statements that contradict each other">
+        <g class="pop p1">
+          <rect x="4" y="26" width="618" height="176" rx="14" fill="#efeae0"
+                stroke="#c2673b" stroke-width="1.7"/>
+          <text class="m" x="34" y="62" font-size="14" fill="#c2673b">NEPAL POLICE - reliability 0.94</text>
+          <text x="34" y="112" font-size="26" fill="#2a1e17">&#8220;Heavy vehicles cannot pass</text>
+          <text x="34" y="150" font-size="26" fill="#2a1e17">the primary approach.&#8221;</text>
+          <text x="34" y="186" font-size="18" fill="#8a7867">read alone: the road is shut</text>
+        </g>
+        <g class="pop p1" style="transition-delay:1000ms">
+          <rect x="798" y="26" width="618" height="176" rx="14" fill="#efeae0"
+                stroke="#7d8a6a" stroke-width="1.7"/>
+          <text class="m" x="828" y="62" font-size="14" fill="#7d8a6a">THE VERY NEXT SENTENCE</text>
+          <text x="828" y="112" font-size="26" fill="#2a1e17">&#8220;Motorcycles and foot teams</text>
+          <text x="828" y="150" font-size="26" fill="#2a1e17">may pass with caution.&#8221;</text>
+          <text x="828" y="186" font-size="18" fill="#8a7867">read alone: the road is open</text>
+        </g>
+        <text class="m fade f2" x="710" y="122" font-size="30" fill="#8f4426" text-anchor="middle">vs</text>
+        <g class="fade f3">
+          <text class="t" x="710" y="266" font-size="31" text-anchor="middle" fill="#2a1e17">
+            Both are true. Averaging them strands a district.
+          </text>
+          <text x="710" y="308" font-size="21" text-anchor="middle" fill="#5f4d40">
+            Delete a corridor that motorcycles can still use, and nothing reaches Taplejung by road at all.
+          </text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 03 ─ Pipeline ──────────────────────────────────────────────────── -->
+<section class="slide" data-t="How it works">
+  <div class="hd">
+    <div class="rule"></div>
+    <h2 data-r="1">So we built a boundary, not a chatbot</h2>
+  </div>
+  <div class="body col">
+    <div class="grow">
+      <svg class="fig" viewBox="0 0 1420 340" role="img" aria-label="Evidence, Gemma, engine, human">
+        <g id="pipeline"></g>
+      </svg>
+    </div>
+    <div class="card note fade f4" style="max-width:none">
+      <p style="max-width:none;color:#2a1e17">
+        <strong>Remove Gemma and there is no input at all.</strong> The engine
+        consumes structured risk signals; nothing but a language model produces
+        them from three reports written by people who never spoke to each other.
+        Gemma is the entire interpretation layer — and it chooses which
+        computation runs.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 04 ─ UNKNOWN ───────────────────────────────────────────────────── -->
+<section class="slide" data-t="Refuses to guess" data-narrow>
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Gemma integration - 1 of 5</div>
+    <h2 data-r="2">Gemma refuses to guess</h2>
+  </div>
+  <div class="body">
+    <div class="grow" data-r="3" style="display:flex;min-height:0">
+      <figure class="shot fit">
+        <img src="shots/06-gemma-extraction.webp" alt="Gemma extraction panel" />
+      </figure>
+    </div>
+    <div class="rail" style="width:340px;flex:0 0 340px">
+      <div class="card" data-r="4">
+        <div class="mono" style="font-size:15px;color:#8f4426">medical_urgency</div>
+        <div class="mono" style="font-size:40px;color:#2a1e17;margin-top:6px">UNKNOWN</div>
+        <p style="font-size:18px;margin-top:10px">
+          No source mentioned injuries, so it reports the gap and asks a follow-up
+          question — it does not interpolate a plausible number.
+        </p>
+      </div>
+      <ul data-r="5">
+        <li><strong>Unknown, zero, unavailable</strong> and not-applicable stay four distinct states.</li>
+        <li>Rendered as a dash <strong>and</strong> a hatch texture, so it survives colour-blindness and a bad projector.</li>
+        <li>Every non-null value cites the evidence IDs behind it.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 04b - Argue back -->
+<section class="slide" data-t="Argue back" data-narrow>
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Gemma integration - 2 of 5</div>
+    <h2 data-r="2">Every gap becomes a question you can answer</h2>
+  </div>
+  <div class="body">
+    <div class="grow" data-r="3" style="display:flex;flex-direction:column;gap:18px;min-height:0">
+      <figure class="shot" style="min-height:0">
+        <img src="shots/19-evidence-needs.webp" alt="Questions the model will not guess" />
+        <figcaption>it states what it cannot support</figcaption>
+      </figure>
+      <figure class="shot" style="min-height:0;align-self:flex-start;max-width:58%">
+        <img src="shots/20-supply-evidence.webp" alt="Supplying the missing evidence" />
+        <figcaption>you hand it the source, and it re-reasons</figcaption>
+      </figure>
+    </div>
+    <div class="rail">
+      <div class="card" data-r="4">
+        <p style="font-size:19px;color:#2a1e17">
+          It does not only refuse. It says <strong>what would change its mind</strong>
+          - and you can give it that.
+        </p>
+      </div>
+      <ul data-r="5">
+        <li>Assign a question to a field desk, or mark it formally unobtainable.</li>
+        <li>Add a report from the map, a radio call, or a bulletin.</li>
+        <li>A new plan is produced, versioned, linked to the one it replaces.</li>
+      </ul>
+      <div class="cap" data-r="6">No approval survives a change to the facts it rested on.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 ─ Function calling ──────────────────────────────────────────── -->
+<section class="slide" data-t="Function calling" data-narrow>
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Gemma integration - 3 of 5</div>
+    <h2 data-r="2">Gemma calls the engine itself</h2>
+  </div>
+  <div class="body">
+    <div class="grow" data-r="3" style="display:flex;min-height:0">
+      <figure class="shot fit">
+        <img src="shots/07-function-call.webp" alt="Native function-call panel" />
+      </figure>
+    </div>
+    <div class="rail">
+      <div class="card" data-r="4">
+        <div class="mono" style="font-size:17px;color:#2a1e17;line-height:1.9">
+          list_corridor_status()<br />
+          run_optimization(<br />
+          &nbsp;&nbsp;analysis_id,<br />
+          &nbsp;&nbsp;blocked_edge_ids,<br />
+          &nbsp;&nbsp;time_elapsed_hours,<br />
+          &nbsp;&nbsp;rationale)
+        </div>
+      </div>
+      <ul data-r="5">
+        <li>Analysis ID must match this turn — it cannot retarget another evidence set.</li>
+        <li>Every corridor must exist in the graph — it cannot invent a closure.</li>
+        <li>Elapsed time bounded 0–72 h.</li>
+        <li>Rationale screened for dispatch language.</li>
+      </ul>
+      <div class="cap" data-r="6">A rejected argument goes back to the model, never to the engine.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 ─ Reasoning ─────────────────────────────────────────────────── -->
+<section class="slide" data-t="Its reasoning">
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Gemma integration - 4 of 5</div>
+    <h2 data-r="2">We show you the model thinking</h2>
+  </div>
+  <div class="body">
+    <div class="rail" style="width:420px;flex:0 0 420px">
+      <div class="card rust" data-r="3">
+        <p style="font-family:'Fraunces',serif;font-size:25px;line-height:1.4;color:#2a1e17;max-width:none">
+          “Heavy vehicles cannot pass… Motorcycles and trained foot teams may pass.
+          <em class="q">This means the corridor is not completely blocked.</em>”
+        </p>
+      </div>
+      <p data-r="4">
+        It then called <span class="mono">run_optimization</span> with
+        <strong class="mono">blocked_edge_ids: []</strong> — refusing to delete a
+        usable corridor on contradictory evidence. Deleting one can strand a district.
+      </p>
+      <div class="cap" data-r="5">~1,900 characters, unedited. Not summarised by us.</div>
+    </div>
+    <div class="grow" data-r="6" style="display:flex;min-height:0">
+      <!-- Typeset rather than screenshotted: 1,900 characters of reasoning cannot
+           be read from a scaled-down capture, and this is the text a judge is
+           meant to actually read. Copied verbatim from the captured turn. -->
+      <div class="term">
+        <div class="term-bar">
+          <span class="mono">model reasoning · verbatim · segment 1 of 2</span>
+        </div>
+        <pre class="term-body">The user wants me to run an optimization for a landslide incident near Taplejung.
+
+1.  <b>Analyze the evidence:</b>
+    * `report-police-001`: Landslide north of Taplejung. "Heavy vehicles cannot
+      pass the primary approach. Motorcycles and trained foot teams may pass
+      with caution." This implies a blockage for heavy vehicles, but doesn't
+      explicitly name a corridor ID.
+    * `report-municipality-002`: 180-340 residents isolated.
+    * `weather-dhm-003`: Continued rainfall, risk of secondary landslides.
+
+2.  <b>Identify the task:</b>
+    * First, I must call `list_corridor_status` to identify the corridors.
+
+3.  <b>Reasoning:</b>
+    * The report says "Heavy vehicles cannot pass". <em>The evidence says heavy
+      vehicles cannot pass, but motorcycles and foot teams can. This means the
+      corridor is <b>partially</b> blocked or restricted.</em>
+    * The instructions say: "Contradictory evidence about passability is NOT an
+      established closure; leave it open and say so in the rationale, because
+      deleting a usable corridor can strand a location."
+    * If I block `mechi_dharan_taplejung`, I am saying the road is impassable.
+      The evidence says it is <b>partially passable</b>.</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 ─ Raw exchange ──────────────────────────────────────────────── -->
+<section class="slide" data-t="Raw exchange" data-narrow>
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Gemma integration - 5 of 5</div>
+    <h2 data-r="2">Nothing between you and the wire</h2>
+  </div>
+  <div class="body">
+    <div class="grow" data-r="3" style="display:flex;min-height:0">
+      <figure class="shot fit">
+        <img src="shots/09-raw-prompt.webp" alt="Raw prompt and response panel" />
+      </figure>
+    </div>
+    <div class="rail">
+      <div class="card" data-r="4">
+        <div class="mono" style="font-size:34px;color:#c2673b">8,208</div>
+        <div class="sub" style="margin-top:2px;font-size:18px">characters of prompt, shown in full</div>
+      </div>
+      <ul data-r="5">
+        <li>The raw JSON <strong>before</strong> validation.</li>
+        <li>The reasoning channel, verbatim.</li>
+        <li>Nothing summarised, nothing reconstructed.</li>
+      </ul>
+      <div class="card note" data-r="6">
+        <p style="font-size:18px">
+          On the extraction call the thought body returns <strong>empty</strong>,
+          because forcing a JSON response type suppresses it. The interface says
+          so rather than inventing reasoning.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07b - The proposal -->
+<section class="slide" data-t="The proposal" data-narrow>
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Functionality</div>
+    <h2 data-r="2">What it actually proposes</h2>
+    <p data-r="3" style="margin-top:14px">
+      Nine assets, eight locations across all seven provinces, six resource types.
+    </p>
+  </div>
+  <div class="body">
+    <div class="grow" data-r="4" style="display:flex;min-height:0">
+      <figure class="shot fit">
+        <img src="shots/21-proposed-plan.webp" alt="The proposed plan" />
+      </figure>
+    </div>
+    <div class="rail">
+      <div class="card" data-r="5">
+        <p style="font-size:19px;color:#2a1e17">
+          A <strong>proposal</strong>, not an instruction. It sits in
+          <span class="mono" style="font-size:17px">awaiting_approval</span>
+          until a named human accepts it.
+        </p>
+      </div>
+      <ul data-r="6">
+        <li>Which asset, which stops, in which order.</li>
+        <li>Distance and time per route - raw kilometres, not weighted cost.</li>
+        <li>What each location was allocated, and what it still lacks.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 08 ─ Baseline ──────────────────────────────────────────────────── -->
+<section class="slide" data-t="Baseline">
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Innovation &amp; impact</div>
+    <h2 data-r="2">We defined the naive baseline, then beat it</h2>
+    <p data-r="3" class="mono" style="font-size:17px;color:#8a7867;margin-top:12px">
+      closure of east_west_bharatpur_nepalgunj — identical inputs to both planners
+    </p>
+  </div>
+  <div class="body col">
+    <div class="grow">
+      <svg class="fig" viewBox="0 0 1420 330" role="img"
+           aria-label="Naive planner keeps 0 of 5 ground routes, RakshyaNet keeps 5 of 5">
+        <text x="330" y="34" font-size="17" fill="#8a7867">
+          drivable ground routes after the corridor closes, out of five
+        </text>
+
+        <text x="310" y="108" font-size="25" fill="#2a1e17" text-anchor="end">Naive planner</text>
+        <rect x="330" y="90" width="880" height="22" rx="11" fill="#d8cfbc"/>
+        <circle class="pop p1" cx="330" cy="101" r="15" fill="#a8402c" stroke="#efeae0" stroke-width="4"/>
+        <text class="m pop p1" x="1246" y="114" font-size="46" fill="#a8402c"
+              data-count="0" data-suffix="/5">0/5</text>
+        <text x="330" y="150" font-size="19" fill="#a8402c" class="fade f2">
+          all five trucks routed through a road nobody can drive
+        </text>
+
+        <text x="310" y="232" font-size="25" fill="#2a1e17" text-anchor="end">RakshyaNet</text>
+        <rect x="330" y="214" width="880" height="22" rx="11" fill="#d8cfbc"/>
+        <rect class="bar b2" x="330" y="214" width="880" height="22" rx="11" fill="#6e8c5a"/>
+        <circle class="pop p2" cx="1210" cy="225" r="15" fill="#6e8c5a" stroke="#efeae0" stroke-width="4"/>
+        <text class="m pop p2" x="1246" y="238" font-size="46" fill="#6e8c5a"
+              data-count="5" data-suffix="/5">0/5</text>
+        <text x="330" y="274" font-size="19" fill="#6e8c5a" class="fade f3">
+          re-planned around it — every truck still reaches its stops
+        </text>
+
+        <g class="fade f4">
+          <text class="m" x="310" y="300" font-size="26" fill="#6b584a" text-anchor="end">+8.0%</text>
+          <text x="310" y="322" font-size="16" fill="#8a7867" text-anchor="end">more distance</text>
+        </g>
+      </svg>
+    </div>
+    <div class="card note fade f4" style="max-width:none">
+      <p style="max-width:none;color:#2a1e17">
+        <strong>The baseline is not a strawman.</strong> It is the same engine with
+        two flags off — same road graph, same Dijkstra, same capacity and fuel
+        constraints, same urgency model, same allocation.
+        <span style="color:#6b584a">Two things we volunteer: we count ground routes,
+        because the four aircraft in the fleet are unaffected by any road closure
+        and would flatter us. And terrain weighting alone changes no path on this
+        network — the entire measured advantage is closure-aware re-planning.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 09 ─ Mathematics ──────────────────────────────────────────────── -->
+<section class="slide" data-t="Mathematics">
+  <div class="hd">
+    <div class="rule"></div>
+    <h2 data-r="1">The mathematics, and what it does not prove</h2>
+  </div>
+  <div class="body">
+    <div class="grow" style="min-width:0">
+      <svg class="fig" viewBox="0 0 760 430" role="img"
+           aria-label="Exponential urgency time factor versus a linear assumption">
+        <g id="urgency"></g>
+      </svg>
+    </div>
+    <div class="rail">
+      <div class="card plain" data-r="2">
+        <div class="mono" style="font-size:19px;color:#2a1e17">cost = d · (1 + 0.06 · max(0, τ−1))</div>
+        <p style="font-size:18px;margin-top:8px">
+          Capability- and closure-filtered Dijkstra. Reported distance is the raw
+          edge sum, <strong>never</strong> the weighted search cost.
+        </p>
+      </div>
+      <div class="card plain" data-r="3">
+        <div class="mono" style="font-size:19px;color:#2a1e17">normalized residual &lt; 0.01</div>
+        <p style="font-size:18px;margin-top:8px">
+          Litres, kits and sheets cannot share one axis, so convergence is
+          dimensionless.
+        </p>
+      </div>
+      <div class="card rust" data-r="4">
+        <p style="font-size:19px;color:#2a1e17">
+          <strong>We audited our own diagnostic.</strong> Three of the four KKT
+          conditions hold for any feasible allocation by construction — so the API
+          ships
+          <span class="mono" style="font-size:17px">independently_proves_optimality: false</span>
+          in the payload. A machine-readable admission, so nothing downstream can
+          ever over-read it.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 ─ Bounded influence ────────────────────────────────────────── -->
+<section class="slide" data-t="Bounded influence">
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Gemma integration · the safety envelope</div>
+    <h2 data-r="2">Core to the decision, bounded in the arithmetic</h2>
+    <p data-r="3" style="margin-top:14px">Drawn to scale.</p>
+  </div>
+  <div class="body col center">
+    <svg class="fig" viewBox="0 0 1300 300" style="max-height:300px" role="img"
+         aria-label="Gemma contributes at most 1.0 against a survival penalty of 10.0">
+      <rect x="30" y="120" width="1180" height="54" rx="10" fill="#d8cfbc"/>
+      <rect class="bar b1" x="30" y="120" width="118" height="54" rx="10" fill="#c2673b"/>
+      <g class="fade f2">
+        <text class="m" x="160" y="106" font-size="30" fill="#c2673b">≤ 1.0</text>
+        <text x="160" y="76" font-size="19" fill="#c2673b">maximum Gemma contribution</text>
+      </g>
+      <g class="fade f3">
+        <text class="m" x="1210" y="216" font-size="30" fill="#6b584a" text-anchor="end">10.0</text>
+        <text x="1210" y="246" font-size="19" fill="#6b584a" text-anchor="end">
+          deterministic survival-threshold penalty
+        </text>
+      </g>
+      <text class="m fade f4" x="30" y="290" font-size="17" fill="#8a7867">
+        B = round( max(severity, medical_urgency, accessibility_risk) × system_confidence , 4 )
+      </text>
+    </svg>
+    <p class="fade f4" style="max-width:70ch;text-align:center;margin-top:18px">
+      The model can reorder priorities by at most a tenth of a single
+      deterministic survival trigger — and only for locations the evidence names.
+    </p>
+  </div>
+</section>
+
+<!-- 11 ─ Human gate ───────────────────────────────────────────────── -->
+<section class="slide" data-t="Human gate" data-narrow>
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Functionality</div>
+    <h2 data-r="2">An operator authorizes a plan, not an integer</h2>
+  </div>
+  <div class="body">
+    <div class="grow" data-r="3" style="display:flex;flex-direction:column;gap:18px;min-height:0">
+      <figure class="shot" style="min-height:0">
+        <img src="shots/13-route-manifest.webp" alt="Route manifest under authorization" />
+      </figure>
+      <figure class="shot" style="min-height:0">
+        <img src="shots/15-decision-receipt.webp" alt="Decision receipt" />
+      </figure>
+    </div>
+    <div class="rail">
+      <ul data-r="4">
+        <li>Every asset with its <strong>feasible or excluded</strong> state.</li>
+        <li>Approval authorizes coordination — it <strong>does not dispatch</strong>.</li>
+        <li>The server's own refusal reasons are shown verbatim, and re-checked on submit.</li>
+        <li>Unresolved exceptions require an acknowledgement <strong>and</strong> a written rationale.</li>
+      </ul>
+      <div class="card" data-r="5">
+        <p style="font-size:19px;color:#2a1e17">
+          The decision leaves an artifact: who decided, when, and why.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 ─ Time control ─────────────────────────────────────────────── -->
+<section class="slide" data-t="Time control">
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Functionality</div>
+    <h2 data-r="2">Scrub the plan, not an animation</h2>
+  </div>
+  <div class="body col">
+    <div class="grow" data-r="3" style="display:flex;gap:22px;min-height:0">
+      <figure class="shot fit" style="flex:1;min-width:0">
+        <img src="../deck-screenshots/17-clock-t45.png" alt="Mission clock at T+45" />
+        <figcaption>T+45 min</figcaption>
+      </figure>
+      <figure class="shot fit" style="flex:1;min-width:0">
+        <img src="../deck-screenshots/18-clock-t120.png" alt="Mission clock at T+120" />
+        <figcaption>T+120 min · 4 of 12 stops served</figcaption>
+      </figure>
+    </div>
+    <div class="body" style="gap:22px;flex:0 0 auto">
+      <div class="card note" data-r="4" style="flex:1">
+        <p style="max-width:none;color:#2a1e17">
+          A browser test asserts rendered vehicle position matches the solver's
+          <span class="mono">eta_minutes</span> to <strong class="mono">0.000000</strong>.
+        </p>
+      </div>
+      <div class="card" data-r="5" style="flex:1">
+        <p style="max-width:none;color:#2a1e17">
+          Re-planning mid-mission departs from <strong>actual</strong> positions —
+          a truck at Nepalgunj re-plans from Nepalgunj:
+          <strong class="mono">962 km → 481 km</strong>.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 ─ Corridors ────────────────────────────────────────────────── -->
+<section class="slide terrain" data-t="Corridors">
+  <div class="hd">
+    <div class="eyebrow" data-r="1">Innovation &amp; impact</div>
+    <h2 data-r="2">Every ground route crosses one corridor</h2>
+  </div>
+  <div class="body">
+    <div class="grow" style="min-width:0">
+      <svg class="fig" viewBox="0 0 900 500" role="img"
+           aria-label="Nepal ground corridor graph with one corridor closed">
+        <g id="corridors"></g>
+      </svg>
+    </div>
+    <div class="rail">
+      <div class="card" data-r="3">
+        <div class="mono" style="font-size:34px;color:#de8a4f">8 / 13</div>
+        <div class="sub" style="font-size:18px;margin-top:2px">corridors are landslide-vulnerable</div>
+      </div>
+      <p data-r="4">
+        Eight of the thirteen are landslide-vulnerable. The dashed one carries
+        every ground route in the plan - so the plan is one rockfall from invalid.
+      </p>
+      <div class="card rust" data-r="5">
+        <p style="font-family:'Fraunces',serif;font-size:24px;line-height:1.35;color:#2a1e17;max-width:none">
+          That is not a scarcity failure. It is an interpretation and routing failure.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 ─ Close ────────────────────────────────────────────────────── -->
+<section class="slide art hero-slide" data-t="Close">
+  <div class="hero-canvas" data-hero="close" aria-hidden="true"></div>
+  <div class="body col center" style="gap:0">
+    <img src="images/logo.png" alt="" data-r="1"
+         style="width:96px;height:96px;object-fit:contain;margin-bottom:36px"
+         onerror="this.style.display='none'" />
+    <h2 data-r="2" style="font-size:56px;max-width:22ch;text-align:center;line-height:1.12">
+      Gemma reads, reasons, and calls the engine.
+    </h2>
+    <p data-r="3" style="font-size:27px;margin-top:22px;text-align:center;max-width:34ch">
+      A human decides who it reaches. Every number traces back to the report that
+      produced it.
+    </p>
+    <div class="cap" data-r="4" style="margin-top:44px">
+      github.com/&lt;your-repo&gt; &nbsp;·&nbsp; live demo &lt;your-url&gt;
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div id="chrome">
+  <button id="prev" aria-label="Previous slide">‹</button>
+  <span id="counter">1 / 15</span>
+  <button id="next" aria-label="Next slide">›</button>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script src="deck.js"></script>
+<script src="hero.js"></script>
+</body>
+</html>

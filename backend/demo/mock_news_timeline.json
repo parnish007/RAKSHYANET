@@ -1,0 +1,60 @@
+{
+  "timeline_name": "Nepal National Multi-Incident Sequence",
+  "description": "Deterministic six-event scenario distributed across Nepal for RakshyaNet demonstrations.",
+  "events": [
+    {
+      "timestamp_offset_seconds": 0,
+      "event_id": "evt_landslide_taplejung",
+      "raw_text": "BREAKING: Major landslide reported in Taplejung. Nepal Police confirms road disruption, injured residents, and urgent medical supply needs.",
+      "source": "Nepal Police Official",
+      "source_type": "verified_government",
+      "expected_confidence": 0.90,
+      "expected_action": "AUTO_OPTIMIZE"
+    },
+    {
+      "timestamp_offset_seconds": 300,
+      "event_id": "evt_bridge_jumla",
+      "raw_text": "Community radio reports possible bridge damage near Jumla. Vehicle access may be restricted, but the extent is not yet independently confirmed.",
+      "source": "Community Radio Karnali",
+      "source_type": "verified_news",
+      "expected_confidence": 0.68,
+      "expected_action": "HITL_REQUIRED"
+    },
+    {
+      "timestamp_offset_seconds": 600,
+      "event_id": "evt_flood_mahendranagar",
+      "raw_text": "Nepal Red Cross confirms flood displacement in Mahendranagar. Emergency shelter, drinking water, and medical supplies are needed.",
+      "source": "Nepal Red Cross Society",
+      "source_type": "verified_ngo",
+      "expected_confidence": 0.88,
+      "expected_action": "AUTO_OPTIMIZE"
+    },
+    {
+      "timestamp_offset_seconds": 900,
+      "event_id": "evt_unverified_bharatpur",
+      "raw_text": "Heard from a friend that there may be an issue somewhere around Bharatpur. No location or impact details are available.",
+      "source": "Anonymous Social Media",
+      "source_type": "unverified",
+      "expected_confidence": 0.35,
+      "expected_action": "IGNORE"
+    },
+    {
+      "timestamp_offset_seconds": 1200,
+      "event_id": "evt_flood_janakpur",
+      "raw_text": "NDRRMA confirms severe flash flooding in Janakpur. Families are displaced and rescue personnel, water, and first-aid supplies are urgently required.",
+      "source": "NDRRMA",
+      "source_type": "verified_government",
+      "expected_confidence": 0.92,
+      "expected_action": "AUTO_OPTIMIZE"
+    },
+    {
+      "timestamp_offset_seconds": 1800,
+      "event_id": "evt_hospital_nepalgunj",
+      "raw_text": "A verified news report says Nepalgunj hospital is receiving flood casualties and requests additional medical kits. The final patient count is pending.",
+      "source": "Kathmandu Post",
+      "source_type": "verified_news",
+      "expected_confidence": 0.72,
+      "expected_action": "HITL_REQUIRED"
+    }
+  ]
+}

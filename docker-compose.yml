@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+      - "5555:5555/udp"  # P2P mesh
+      - "5556:5556/udp"  # P2P broadcast
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app/backend
+      - chromadb_data:/app/chromadb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_WS_URL=ws://localhost:8000/ws
+      - VITE_MAPBOX_TOKEN=${MAPBOX_TOKEN}
+    depends_on:
+      - backend
+
+volumes:
+  chromadb_data:

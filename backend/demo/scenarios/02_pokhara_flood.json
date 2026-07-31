@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "scenario_id": "pokhara-flood-prithvi-closure",
+  "title": "Pokhara flash flood with Prithvi corridor closure",
+  "description": "A simulated flood response is recalculated when a washout blocks the Bharatpur-Pokhara section of the Prithvi corridor.",
+  "simulated": true,
+  "expected_final_status": "rejected",
+  "timeline": [
+    {
+      "t_seconds": 0,
+      "step_id": "initial-evidence",
+      "event_type": "evidence_report",
+      "evidence": [
+        {
+          "evidence_id": "mock-pokhara-redcross-001",
+          "source_category": "verified_ngo",
+          "source_name": "Nepal Red Cross Pokhara Exercise Cell",
+          "source_identifier": "mock://pokhara/redcross/001",
+          "freshness_minutes": 6,
+          "reliability": 0.9,
+          "text": "Simulated report: flash flood conditions in Pokhara have displaced families and created medical, drinking-water, food, blanket, and shelter needs.",
+          "reported_latitude": 28.2096,
+          "reported_longitude": 83.9856
+        },
+        {
+          "evidence_id": "mock-pokhara-weather-002",
+          "source_category": "weather",
+          "source_name": "Simulated DHM Weather Desk",
+          "source_identifier": "mock://pokhara/weather/002",
+          "freshness_minutes": 12,
+          "reliability": 0.84,
+          "text": "Simulated weather bulletin corroborates intense rainfall around Pokhara and warns that additional flooding and road damage remain possible."
+        }
+      ],
+      "expectation": {
+        "analysis_needs_human_review": true
+      }
+    },
+    {
+      "t_seconds": 40,
+      "step_id": "baseline-plan",
+      "event_type": "optimization_requested",
+      "expectation": {
+        "run_status": "awaiting_approval",
+        "route_feasible": true,
+        "minimum_route_count": 1,
+        "child_run": false
+      }
+    },
+    {
+      "t_seconds": 180,
+      "step_id": "sudden-prithvi-washout",
+      "event_type": "road_block_report",
+      "evidence": [
+        {
+          "evidence_id": "mock-pokhara-road-003",
+          "source_category": "field_transport",
+          "source_name": "Simulated Gandaki Road Operations",
+          "source_identifier": "mock://pokhara/road/003",
+          "freshness_minutes": 2,
+          "reliability": 0.92,
+          "text": "Simulated breaking report: flood water has washed out the Prithvi road segment between Bharatpur and Pokhara. Trucks cannot use the blocked corridor.",
+          "gap_target": "Current road access"
+        }
+      ],
+      "blocked_edge_ids": [
+        "prithvi_bharatpur_pokhara"
+      ],
+      "reason": "Simulated flood washout closes the Bharatpur-Pokhara Prithvi segment.",
+      "expectation": {
+        "run_status": "awaiting_approval",
+        "route_feasible": true,
+        "minimum_route_count": 1,
+        "child_run": true,
+        "blocked_edges_active": [
+          "prithvi_bharatpur_pokhara"
+        ]
+      }
+    },
+    {
+      "t_seconds": 240,
+      "step_id": "mark-count-unavailable",
+      "event_type": "evidence_disposition",
+      "question_index": 1,
+      "disposition_status": "unavailable",
+      "owner": "Gandaki information officer",
+      "reason": "A verified affected-population estimate is unavailable during this exercise window.",
+      "expectation": {
+        "question_status": "unavailable"
+      }
+    },
+    {
+      "t_seconds": 300,
+      "step_id": "request-field-changes",
+      "event_type": "review_decision",
+      "decision": "reject",
+      "reviewer": "mock-gandaki-coordinator",
+      "reason": "Simulated reviewer requests a bridge inspection and fresh population estimate before accepting the child plan.",
+      "expectation": {
+        "decision_status": "rejected"
+      }
+    }
+  ]
+}

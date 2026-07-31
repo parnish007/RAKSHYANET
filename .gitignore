@@ -1,0 +1,114 @@
+# ---------------------------------------------------------------------------
+# Secrets — nothing in this block may ever be committed.
+# `.env` holds real Gemma API keys. `.env.example` is the tracked template and
+# must stay key-free.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+ENV/
+*.egg-info/
+build/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# ---------------------------------------------------------------------------
+# Node / Vite
+# ---------------------------------------------------------------------------
+node_modules/
+dist/
+.vite/
+.cache/
+*.local
+npm-debug.log*
+yarn-error.log*
+
+# ---------------------------------------------------------------------------
+# Playwright — reports and screenshots are large and fully regenerable
+# ---------------------------------------------------------------------------
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
+frontend/.playwright/
+frontend/tests/__shots__/
+frontend/tests/tmp-*
+
+# ---------------------------------------------------------------------------
+# Editors / OS
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------------------------------------------------------------------
+# Agent / assistant tooling
+# `.agents/` is a vendored third-party skills pack; `skills-lock.json` is
+# tracked so it can be restored reproducibly.
+# ---------------------------------------------------------------------------
+.agents/
+.claude/settings.local.json
+
+# ---------------------------------------------------------------------------
+# Internal working notes — kept on disk, deliberately not published.
+# Superseded planning docs, deck-authoring briefs, and presenter scratch.
+# ---------------------------------------------------------------------------
+docs/internal/
+
+# ---------------------------------------------------------------------------
+# Scratch, logs, and abandoned material
+# ---------------------------------------------------------------------------
+tmp/
+backup/
+conversations/
+memory/
+ui_insipration/
+ui-validation-*.png
+*.log
+
+# ---------------------------------------------------------------------------
+# Local databases and vector stores
+# ---------------------------------------------------------------------------
+chromadb/
+*.db
+
+# ---------------------------------------------------------------------------
+# Docker
+# ---------------------------------------------------------------------------
+*.override.yml
+
+# ---------------------------------------------------------------------------
+# NOT ignored, on purpose:
+#   .env.example                 tracked template, no real keys
+#   backend/data/**/*.json       deterministic demo fixtures
+#   backend/data/imagery/*.jpg   small demo imagery fixtures (~50 KB total)
+#   docs/deck/**                 the presentation deck is a submission artifact
+# ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Abandoned design exploration and local agent config — not part of the build.
+# ---------------------------------------------------------------------------
+design-system/
+.claude/
+blueprint.md
+CONTEXT.md
+docs/CONTEXT.md

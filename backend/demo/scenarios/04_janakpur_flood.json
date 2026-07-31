@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "scenario_id": "janakpur-flood-bp-closure",
+  "title": "Janakpur flood with B.P. corridor closure",
+  "description": "A simulated Janakpur flood plan is versioned again after a road authority report closes the direct B.P. corridor.",
+  "simulated": true,
+  "expected_final_status": "rejected",
+  "timeline": [
+    {
+      "t_seconds": 0,
+      "step_id": "initial-evidence",
+      "event_type": "evidence_report",
+      "evidence": [
+        {
+          "evidence_id": "mock-janakpur-ndrrma-001",
+          "source_category": "verified_government",
+          "source_name": "NDRRMA Janakpur Exercise Cell",
+          "source_identifier": "mock://janakpur/ndrrma/001",
+          "freshness_minutes": 5,
+          "reliability": 0.95,
+          "text": "Simulated report: severe flood conditions in Janakpur have displaced families and created urgent water, first-aid, medical, food, and shelter needs.",
+          "reported_latitude": 26.7288,
+          "reported_longitude": 85.925
+        },
+        {
+          "evidence_id": "mock-janakpur-hospital-002",
+          "source_category": "health",
+          "source_name": "Janakpur Hospital Exercise Desk",
+          "source_identifier": "mock://janakpur/hospital/002",
+          "freshness_minutes": 7,
+          "reliability": 0.89,
+          "text": "Simulated hospital update corroborates flood casualties in Janakpur and requests medical kits and first aid while the patient count remains unverified."
+        }
+      ],
+      "expectation": {
+        "analysis_needs_human_review": true
+      }
+    },
+    {
+      "t_seconds": 25,
+      "step_id": "baseline-plan",
+      "event_type": "optimization_requested",
+      "expectation": {
+        "run_status": "awaiting_approval",
+        "route_feasible": true,
+        "minimum_route_count": 1,
+        "child_run": false
+      }
+    },
+    {
+      "t_seconds": 150,
+      "step_id": "sudden-bp-corridor-closure",
+      "event_type": "road_block_report",
+      "evidence": [
+        {
+          "evidence_id": "mock-janakpur-road-003",
+          "source_category": "field_transport",
+          "source_name": "Simulated B.P. Highway Control",
+          "source_identifier": "mock://janakpur/road/003",
+          "freshness_minutes": 2,
+          "reliability": 0.9,
+          "text": "Simulated breaking road report: flood debris and slope damage have blocked the direct B.P. corridor between Kathmandu and Janakpur.",
+          "gap_target": "Current road access"
+        }
+      ],
+      "blocked_edge_ids": [
+        "bp_kathmandu_janakpur"
+      ],
+      "reason": "Simulated flood debris closes the direct B.P. Kathmandu-Janakpur corridor.",
+      "expectation": {
+        "run_status": "awaiting_approval",
+        "route_feasible": true,
+        "minimum_route_count": 1,
+        "child_run": true,
+        "blocked_edges_active": [
+          "bp_kathmandu_janakpur"
+        ]
+      }
+    },
+    {
+      "t_seconds": 205,
+      "step_id": "assign-population-estimate",
+      "event_type": "evidence_disposition",
+      "question_index": 1,
+      "disposition_status": "assigned",
+      "owner": "Madhesh district data team",
+      "reason": "The district data team will verify the affected-population estimate and hospital demand.",
+      "expectation": {
+        "question_status": "assigned"
+      }
+    },
+    {
+      "t_seconds": 270,
+      "step_id": "reject-pending-hospital-count",
+      "event_type": "review_decision",
+      "decision": "reject",
+      "reviewer": "mock-madhesh-coordinator",
+      "reason": "Simulated reviewer requests verified hospital demand and a corridor inspection before accepting the plan.",
+      "expectation": {
+        "decision_status": "rejected"
+      }
+    }
+  ]
+}

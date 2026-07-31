@@ -1,0 +1,36 @@
+{
+  "scenario_id": "nepal-national-demo",
+  "fixture_notice": "Simulated Nepal-wide hackathon evidence. Not a live government or field feed.",
+  "evidence": [
+    {
+      "evidence_id": "report-police-001",
+      "source_category": "Nepal Police",
+      "source_name": "Simulated Taplejung Police field report",
+      "source_identifier": "fixture://nepal/taplejung/police/001",
+      "retrieved_at": "2026-07-27T09:45:00+00:00",
+      "freshness_minutes": 18,
+      "reliability": 0.94,
+      "text": "Landslide damage reported north of Taplejung. Heavy vehicles cannot pass the primary approach. Motorcycles and trained foot teams may pass with caution."
+    },
+    {
+      "evidence_id": "report-municipality-002",
+      "source_category": "Municipality",
+      "source_name": "Simulated Taplejung municipality situation update",
+      "source_identifier": "fixture://nepal/taplejung/municipality/002",
+      "retrieved_at": "2026-07-27T09:51:00+00:00",
+      "freshness_minutes": 12,
+      "reliability": 0.86,
+      "text": "Multiple households are isolated after slope failure. The number of affected residents is estimated between 180 and 340. Medical supplies and shelter materials are requested. A simulated municipal rapid-assessment worksheet records incident severity as 0.82 and road accessibility risk as 0.88 on a 0-to-1 scale."
+    },
+    {
+      "evidence_id": "weather-dhm-003",
+      "source_category": "DHM",
+      "source_name": "Simulated Department of Hydrology and Meteorology advisory",
+      "source_identifier": "fixture://nepal/dhm/003",
+      "retrieved_at": "2026-07-27T09:54:00+00:00",
+      "freshness_minutes": 9,
+      "reliability": 0.96,
+      "text": "Continued rainfall is likely across eastern Nepal during the next six hours. Saturated slopes may increase secondary landslide risk around Taplejung and nearby hill districts."
+    }
+  ]
+}

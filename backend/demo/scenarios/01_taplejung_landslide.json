@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "scenario_id": "taplejung-landslide-mechi-closure",
+  "title": "Taplejung landslide with Mechi corridor closure",
+  "description": "Simulated police and municipal reports create a baseline plan, followed by a verified landslide closure on the Mechi mountain corridor.",
+  "simulated": true,
+  "expected_final_status": "approved",
+  "timeline": [
+    {
+      "t_seconds": 0,
+      "step_id": "initial-evidence",
+      "event_type": "evidence_report",
+      "evidence": [
+        {
+          "evidence_id": "mock-taplejung-police-001",
+          "source_category": "verified_government",
+          "source_name": "Nepal Police Taplejung Desk",
+          "source_identifier": "mock://taplejung/police/001",
+          "freshness_minutes": 4,
+          "reliability": 0.94,
+          "text": "Simulated report: a major landslide in Taplejung has injured residents, damaged homes, and created urgent medical and road-access concerns.",
+          "operator_context": "Initial national response exercise report.",
+          "reported_latitude": 27.352,
+          "reported_longitude": 87.668
+        },
+        {
+          "evidence_id": "mock-taplejung-municipality-002",
+          "source_category": "local_government",
+          "source_name": "Taplejung Municipality Mock Desk",
+          "source_identifier": "mock://taplejung/municipality/002",
+          "freshness_minutes": 9,
+          "reliability": 0.86,
+          "text": "Simulated municipal update corroborates the Taplejung landslide and requests medical kits, first aid, shelter, food, and water."
+        }
+      ],
+      "expectation": {
+        "analysis_needs_human_review": true
+      }
+    },
+    {
+      "t_seconds": 30,
+      "step_id": "baseline-plan",
+      "event_type": "optimization_requested",
+      "expectation": {
+        "run_status": "awaiting_approval",
+        "route_feasible": true,
+        "minimum_route_count": 1,
+        "child_run": false
+      }
+    },
+    {
+      "t_seconds": 240,
+      "step_id": "sudden-mechi-closure",
+      "event_type": "road_block_report",
+      "evidence": [
+        {
+          "evidence_id": "mock-taplejung-road-003",
+          "source_category": "field_transport",
+          "source_name": "Simulated Mechi Highway Patrol",
+          "source_identifier": "mock://taplejung/road/003",
+          "freshness_minutes": 1,
+          "reliability": 0.91,
+          "text": "Simulated breaking road report: a second landslide has blocked the Mechi corridor between Dharan and Taplejung. Ground passage is closed pending inspection.",
+          "operator_context": "Sudden corridor disruption after the baseline plan.",
+          "gap_target": "Current road access"
+        }
+      ],
+      "blocked_edge_ids": [
+        "mechi_dharan_taplejung"
+      ],
+      "reason": "Simulated landslide debris blocks the Mechi mountain corridor.",
+      "expectation": {
+        "run_status": "awaiting_approval",
+        "route_feasible": true,
+        "minimum_route_count": 1,
+        "child_run": true,
+        "blocked_edges_active": [
+          "mechi_dharan_taplejung"
+        ]
+      }
+    },
+    {
+      "t_seconds": 300,
+      "step_id": "assign-population-verification",
+      "event_type": "evidence_disposition",
+      "question_index": 1,
+      "disposition_status": "assigned",
+      "owner": "Taplejung field coordination desk",
+      "reason": "The field desk will verify the affected-population estimate before the next planning cycle.",
+      "expectation": {
+        "question_status": "assigned"
+      }
+    },
+    {
+      "t_seconds": 360,
+      "step_id": "approve-child-plan",
+      "event_type": "review_decision",
+      "decision": "approve",
+      "reviewer": "mock-national-coordinator",
+      "reason": "Simulated reviewer verified the closure exclusion, route feasibility, inventory snapshot, and owned evidence gap.",
+      "expectation": {
+        "decision_status": "approved"
+      }
+    }
+  ]
+}

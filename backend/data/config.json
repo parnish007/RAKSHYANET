@@ -1,0 +1,127 @@
+{
+  "scenario_name": "Nepal National Multi-Incident Response",
+  "total_supply_budget_kg": 12000,
+
+  "vehicle_types": {
+    "heavy_helicopter": {
+      "type_id": "heavy_helicopter",
+      "name": "MI-17 Helicopter",
+      "category": "aircraft",
+      "capacity_kg": 800,
+      "speed_kmh": 200,
+      "fuel_hours": 2.5,
+      "terrain_capability": "any",
+      "cost_per_km": 5.0,
+      "preferred_resources": ["medical_kit", "first_aid"]
+    },
+    "light_helicopter": {
+      "type_id": "light_helicopter",
+      "name": "AS350 Light Helicopter",
+      "category": "aircraft",
+      "capacity_kg": 400,
+      "speed_kmh": 220,
+      "fuel_hours": 2.0,
+      "terrain_capability": "any",
+      "cost_per_km": 3.5,
+      "preferred_resources": ["medical_kit", "first_aid"]
+    },
+    "heavy_truck": {
+      "type_id": "heavy_truck",
+      "name": "TATA 6-Wheel Truck",
+      "category": "ground_heavy",
+      "capacity_kg": 3000,
+      "speed_kmh": 40,
+      "fuel_hours": 10.0,
+      "terrain_capability": "paved_roads",
+      "cost_per_km": 1.5,
+      "preferred_resources": ["food", "water", "tarpaulin", "blanket"]
+    },
+    "van_4x4": {
+      "type_id": "van_4x4",
+      "name": "4x4 Relief Van",
+      "category": "ground_light",
+      "capacity_kg": 800,
+      "speed_kmh": 60,
+      "fuel_hours": 8.0,
+      "terrain_capability": "all_roads",
+      "cost_per_km": 1.0,
+      "preferred_resources": []
+    },
+    "motorcycle": {
+      "type_id": "motorcycle",
+      "name": "Trail Motorcycle",
+      "category": "ground_light",
+      "capacity_kg": 50,
+      "speed_kmh": 80,
+      "fuel_hours": 4.0,
+      "terrain_capability": "dirt_paths",
+      "cost_per_km": 0.3,
+      "preferred_resources": ["medical_kit", "first_aid"]
+    }
+  },
+
+  "fleet_composition": {
+    "heavy_helicopter": 2,
+    "light_helicopter": 2,
+    "heavy_truck": 4,
+    "van_4x4": 3,
+    "motorcycle": 2
+  },
+
+  "resource_types": {
+    "food": {
+      "resource_id": "food",
+      "name": "Food Packets (Rice/Dal)",
+      "category": "food",
+      "unit": "kg",
+      "urgency_multiplier": 1.5,
+      "weight_per_unit": 1.0,
+      "shelf_life_hours": 720
+    },
+    "water": {
+      "resource_id": "water",
+      "name": "Drinking Water",
+      "category": "water",
+      "unit": "liter",
+      "urgency_multiplier": 1.8,
+      "weight_per_unit": 1.0,
+      "shelf_life_hours": null
+    },
+    "medical_kit": {
+      "resource_id": "medical_kit",
+      "name": "Emergency Medical Kit",
+      "category": "medical",
+      "unit": "kit",
+      "urgency_multiplier": 2.0,
+      "weight_per_unit": 5.0,
+      "shelf_life_hours": null
+    },
+    "tarpaulin": {
+      "resource_id": "tarpaulin",
+      "name": "Tarpaulin Sheets",
+      "category": "shelter",
+      "unit": "sheet",
+      "urgency_multiplier": 1.2,
+      "weight_per_unit": 3.0,
+      "shelf_life_hours": null
+    },
+    "blanket": {
+      "resource_id": "blanket",
+      "name": "Blankets",
+      "category": "shelter",
+      "unit": "piece",
+      "urgency_multiplier": 1.0,
+      "weight_per_unit": 2.0,
+      "shelf_life_hours": null
+    },
+    "first_aid": {
+      "resource_id": "first_aid",
+      "name": "First Aid Supplies",
+      "category": "medical",
+      "unit": "kg",
+      "urgency_multiplier": 1.7,
+      "weight_per_unit": 1.0,
+      "shelf_life_hours": null
+    }
+  }
+}

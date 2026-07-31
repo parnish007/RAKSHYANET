@@ -1,0 +1,454 @@
+/* ── Terrain cost panel ─────────────────────────────────────────────────── */
+
+.tc-panel {
+  --tc-easy: var(--ops-accent-ok);
+  --tc-moderate: var(--ops-accent-solver);
+  --tc-hard: var(--ops-accent-human);
+  --tc-severe: var(--ops-accent-alert);
+
+  min-width: 0;
+}
+
+.tc-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ops-space-5, 18px);
+  flex-wrap: wrap;
+  padding: var(--ops-space-4, 15px) var(--ops-space-5, 18px) var(--ops-space-4, 14px);
+  border-bottom: 1px solid var(--ops-line);
+}
+
+.tc-head-copy {
+  min-width: 0;
+  flex: 1 1 380px;
+}
+
+.tc-head h2 {
+  margin: 4px 0 0;
+  line-height: 1.15;
+}
+
+.tc-head p {
+  max-width: 66ch;
+  margin: 5px 0 0;
+  color: var(--ops-muted);
+  font-size: var(--ops-fs-500, 13px);
+  line-height: 1.5;
+}
+
+.tc-formula {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  padding: 9px 12px;
+  border: 1px solid var(--ops-line-strong);
+  border-radius: var(--ops-radius-sm, 5px);
+  background: rgba(15, 12, 9, 0.45);
+}
+
+.tc-formula code {
+  overflow-wrap: anywhere;
+  color: var(--ops-accent-solver);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-300, 11px);
+  letter-spacing: 0.01em;
+}
+
+.tc-formula small {
+  color: var(--ops-subtle);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-100, 9px);
+}
+
+/* ── Stat strip ─────────────────────────────────────────────────────────── */
+
+.tc-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1px;
+  border-bottom: 1px solid var(--ops-line);
+  background: var(--ops-line);
+}
+
+.tc-stats > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px var(--ops-space-5, 18px);
+  background: var(--ops-surface);
+}
+
+.tc-stats span {
+  color: var(--ops-subtle);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-200, 10px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tc-stats b {
+  color: var(--ops-text);
+  font-size: var(--ops-fs-700, 17px);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
+}
+
+.tc-stats b[data-tone='warn'] { color: var(--tc-hard); }
+
+.tc-stats small {
+  color: var(--ops-muted);
+  font-size: var(--ops-fs-300, 11px);
+  line-height: 1.4;
+}
+
+/* ── Table ──────────────────────────────────────────────────────────────── */
+
+.tc-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.tc-table-wrap:focus-visible {
+  outline: 2px solid var(--ops-accent-solver);
+  outline-offset: -2px;
+}
+
+.tc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ops-fs-400, 12px);
+}
+
+.tc-table caption {
+  padding: 12px var(--ops-space-5, 18px) 8px;
+  color: var(--ops-subtle);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-200, 10px);
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.tc-table thead th {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--ops-line-strong);
+  color: var(--ops-subtle);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-200, 10px);
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tc-table thead th:first-child {
+  padding-left: var(--ops-space-5, 18px);
+}
+
+.tc-table tbody tr {
+  border-bottom: 1px solid var(--ops-line);
+}
+
+.tc-table tbody tr:last-child {
+  border-bottom: 0;
+}
+
+.tc-table tbody th,
+.tc-table tbody td {
+  padding: 10px 12px;
+  color: var(--ops-muted);
+  font-weight: 400;
+  text-align: left;
+  vertical-align: top;
+}
+
+.tc-table tbody th {
+  padding-left: var(--ops-space-5, 18px);
+  border-left: 2px solid transparent;
+}
+
+.tc-table tbody tr[data-band='moderate'] th { border-left-color: var(--tc-moderate); }
+.tc-table tbody tr[data-band='hard'] th { border-left-color: var(--tc-hard); }
+.tc-table tbody tr[data-band='severe'] th { border-left-color: var(--tc-severe); }
+.tc-table tbody tr[data-band='easy'] th { border-left-color: var(--tc-easy); }
+
+.tc-table tbody th b {
+  display: block;
+  color: var(--ops-text);
+  font-size: var(--ops-fs-400, 12px);
+  font-weight: 600;
+}
+
+.tc-table tbody th code,
+.tc-table tbody td small {
+  display: block;
+  margin-top: 2px;
+  color: var(--ops-subtle);
+  font-size: var(--ops-fs-200, 10px);
+  line-height: 1.4;
+}
+
+.tc-table tbody th code {
+  font-family: var(--ops-font-mono);
+}
+
+.tc-num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.tc-num b {
+  color: var(--ops-text);
+  font-weight: 600;
+}
+
+.tc-surface {
+  display: inline-block;
+  padding: 1px 7px;
+  border: 1px solid var(--ops-line-strong);
+  border-radius: 999px;
+  color: var(--ops-muted);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-200, 10px);
+  letter-spacing: 0.04em;
+}
+
+.tc-surface.dirt { border-color: rgba(208, 97, 80, 0.4); color: #df9387; }
+.tc-surface.mixed { border-color: rgba(222, 164, 96, 0.4); color: var(--tc-hard); }
+
+.tc-band {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-200, 10px);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tc-band.easy { color: var(--tc-easy); }
+.tc-band.moderate { color: var(--tc-moderate); }
+.tc-band.hard { color: var(--tc-hard); }
+.tc-band.severe { color: var(--tc-severe); }
+
+.tc-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-200, 10px);
+  white-space: nowrap;
+}
+
+.tc-flag.warn { color: var(--tc-hard); }
+.tc-flag.calm { color: var(--ops-subtle); }
+
+.tc-math code {
+  display: block;
+  color: var(--ops-muted);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-300, 11px);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.tc-math code b {
+  color: var(--ops-accent-solver);
+  font-weight: 600;
+}
+
+/* ── Unused corridors ───────────────────────────────────────────────────── */
+
+.tc-why {
+  padding: 12px var(--ops-space-5, 18px);
+  border-top: 1px solid var(--ops-line);
+}
+
+.tc-toggle {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 1px solid var(--ops-line-strong);
+  border-radius: var(--ops-radius-sm, 5px);
+  color: var(--ops-text);
+  background: var(--ops-surface-raised);
+  font-size: var(--ops-fs-400, 12px);
+  transition: border-color 150ms ease, background-color 150ms ease;
+}
+
+.tc-toggle:hover {
+  border-color: var(--ops-line-strong);
+  background: var(--ops-surface-active);
+}
+
+.tc-unused {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tc-unused li {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--ops-line);
+  border-left: 2px solid var(--ops-line-strong);
+  border-radius: var(--ops-radius-sm, 5px);
+  background: rgba(15, 12, 9, 0.34);
+}
+
+.tc-unused li[data-band='hard'] { border-left-color: var(--tc-hard); }
+.tc-unused li[data-band='severe'] { border-left-color: var(--tc-severe); }
+
+.tc-unused-id b {
+  color: var(--ops-text);
+  font-size: var(--ops-fs-400, 12px);
+  font-weight: 600;
+}
+
+.tc-unused-id code {
+  display: block;
+  margin-top: 2px;
+  overflow-wrap: anywhere;
+  color: var(--ops-subtle);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-200, 10px);
+}
+
+.tc-unused-facts {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin: 7px 0;
+}
+
+.tc-unused-facts span {
+  padding: 1px 6px;
+  border: 1px solid var(--ops-line);
+  border-radius: 3px;
+  color: var(--ops-muted);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-200, 10px);
+}
+
+.tc-unused-reason {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin: 0;
+  color: var(--ops-subtle);
+  font-size: var(--ops-fs-300, 11px);
+  line-height: 1.5;
+}
+
+.tc-unused-reason svg {
+  flex: 0 0 auto;
+  translate: 0 2px;
+  color: var(--tc-severe);
+}
+
+.tc-unused-reason code {
+  color: var(--ops-muted);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-200, 10px);
+}
+
+/* ── Measured finding ───────────────────────────────────────────────────── */
+
+.tc-finding {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 var(--ops-space-5, 18px) var(--ops-space-4, 14px);
+  padding: 13px 15px;
+  border: 1px solid rgba(145, 164, 118, 0.28);
+  border-radius: var(--ops-radius-md, 6px);
+  background: rgba(145, 164, 118, 0.06);
+}
+
+.tc-finding-mark {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border: 1px solid rgba(145, 164, 118, 0.45);
+  border-radius: 999px;
+  color: var(--ops-accent-solver);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-100, 9px);
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.tc-finding b {
+  color: var(--ops-text);
+  font-size: var(--ops-fs-500, 13px);
+  font-weight: 600;
+}
+
+.tc-finding p {
+  max-width: 88ch;
+  margin: 5px 0 0;
+  color: var(--ops-muted);
+  font-size: var(--ops-fs-400, 12px);
+  line-height: 1.55;
+}
+
+.tc-finding p b {
+  font-size: inherit;
+}
+
+.tc-finding code {
+  overflow-wrap: anywhere;
+  color: var(--ops-accent-solver);
+  font-family: var(--ops-font-mono);
+  font-size: var(--ops-fs-300, 11px);
+}
+
+.tc-capability {
+  max-width: 96ch;
+  margin: 0 var(--ops-space-5, 18px) var(--ops-space-4, 14px);
+  color: var(--ops-subtle);
+  font-size: var(--ops-fs-300, 11px);
+  line-height: 1.55;
+}
+
+.tc-capability code {
+  color: var(--ops-muted);
+  font-family: var(--ops-font-mono);
+}
+
+.tc-empty {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  margin: var(--ops-space-5, 18px);
+  padding: 32px 18px;
+  border: 1px dashed var(--ops-line-strong);
+  border-radius: var(--ops-radius-md, 6px);
+  color: var(--ops-subtle);
+  text-align: center;
+}
+
+.tc-empty b {
+  color: var(--ops-text);
+  font-size: var(--ops-fs-500, 13px);
+}
+
+.tc-empty p {
+  margin: 0;
+  font-size: var(--ops-fs-300, 11px);
+}
+
+@media (max-width: 720px) {
+  .tc-finding {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

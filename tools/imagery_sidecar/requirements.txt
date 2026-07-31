@@ -1,0 +1,15 @@
+# Imagery sidecar ONLY. Never add these to backend/requirements.txt (contract C8.1)
+# -- torch is a 2.6 GB install and must stay out of the backend environment.
+#
+# torch must come from the CUDA 12.6 index:
+#   pip install --cache-dir D:\rakshyanet-models\pipcache torch --index-url https://download.pytorch.org/whl/cu126
+#
+# Versions below are what is actually installed and verified in
+# D:\rakshyanet-models\venv on this machine.
+
+torch==2.13.0+cu126
+transformers==5.14.1
+pillow==12.3.0
+fastapi==0.141.1
+uvicorn==0.52.0
+numpy==2.2.6

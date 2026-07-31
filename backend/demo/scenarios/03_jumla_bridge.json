@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "scenario_id": "jumla-bridge-karnali-closure",
+  "title": "Jumla bridge failure with Karnali reroute",
+  "description": "Community and district reports trigger a Jumla plan before a simulated bridge failure removes the Pokhara-Jumla Karnali edge.",
+  "simulated": true,
+  "expected_final_status": "approved",
+  "timeline": [
+    {
+      "t_seconds": 0,
+      "step_id": "initial-evidence",
+      "event_type": "evidence_report",
+      "evidence": [
+        {
+          "evidence_id": "mock-jumla-radio-001",
+          "source_category": "verified_news",
+          "source_name": "Community Radio Karnali Exercise Desk",
+          "source_identifier": "mock://jumla/radio/001",
+          "freshness_minutes": 8,
+          "reliability": 0.76,
+          "text": "Simulated report: a landslide near Jumla has injured travelers and may restrict the mountain road. Medical supplies, food, and shelter are requested.",
+          "reported_latitude": 29.2747,
+          "reported_longitude": 82.1838
+        },
+        {
+          "evidence_id": "mock-jumla-district-002",
+          "source_category": "local_government",
+          "source_name": "Jumla District Exercise Office",
+          "source_identifier": "mock://jumla/district/002",
+          "freshness_minutes": 11,
+          "reliability": 0.88,
+          "text": "Simulated district update corroborates the Jumla landslide and confirms that medical response teams are assessing road accessibility."
+        }
+      ],
+      "expectation": {
+        "analysis_needs_human_review": true
+      }
+    },
+    {
+      "t_seconds": 35,
+      "step_id": "baseline-plan",
+      "event_type": "optimization_requested",
+      "expectation": {
+        "run_status": "awaiting_approval",
+        "route_feasible": true,
+        "minimum_route_count": 1,
+        "child_run": false
+      }
+    },
+    {
+      "t_seconds": 210,
+      "step_id": "sudden-karnali-bridge-failure",
+      "event_type": "road_block_report",
+      "evidence": [
+        {
+          "evidence_id": "mock-jumla-road-003",
+          "source_category": "field_transport",
+          "source_name": "Simulated Karnali Bridge Inspection Team",
+          "source_identifier": "mock://jumla/bridge/003",
+          "freshness_minutes": 1,
+          "reliability": 0.93,
+          "text": "Simulated breaking report: bridge damage has blocked the Karnali mountain corridor from Pokhara to Jumla. The road is closed to trucks.",
+          "gap_target": "Bridge and road status"
+        }
+      ],
+      "blocked_edge_ids": [
+        "karnali_pokhara_jumla"
+      ],
+      "reason": "Simulated structural damage closes the Pokhara-Jumla Karnali bridge corridor.",
+      "expectation": {
+        "run_status": "awaiting_approval",
+        "route_feasible": true,
+        "minimum_route_count": 1,
+        "child_run": true,
+        "blocked_edges_active": [
+          "karnali_pokhara_jumla"
+        ]
+      }
+    },
+    {
+      "t_seconds": 270,
+      "step_id": "assign-independent-corroboration",
+      "event_type": "evidence_disposition",
+      "question_index": 0,
+      "disposition_status": "assigned",
+      "owner": "Karnali verification team",
+      "reason": "The verification team will obtain an independent district road-status report.",
+      "expectation": {
+        "question_status": "assigned"
+      }
+    },
+    {
+      "t_seconds": 330,
+      "step_id": "approve-rerouted-plan",
+      "event_type": "review_decision",
+      "decision": "approve",
+      "reviewer": "mock-karnali-coordinator",
+      "reason": "Simulated reviewer verified that feasible ground routes exclude the failed bridge and aircraft remain road independent.",
+      "expectation": {
+        "decision_status": "approved"
+      }
+    }
+  ]
+}

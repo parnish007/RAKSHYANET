@@ -1,0 +1,75 @@
+{
+  "description": "Scripted Nepal-wide news timeline for deterministic re-optimization demos.",
+  "events": [
+    {
+      "id": "evt_001",
+      "timestamp": "2026-04-16T14:23:00",
+      "source": "@NepalPolice",
+      "source_type": "verified_government",
+      "text": "Major landslide reported in Taplejung. A medical post is damaged and road access is disrupted.",
+      "village_id": "taplejung",
+      "severity_score": 0.92,
+      "confidence": 0.92,
+      "keywords": ["landslide", "medical", "casualties", "blocked"],
+      "multi_source_confirmation": true,
+      "verified": true,
+      "demo_note": "Triggers high-urgency re-optimization for Taplejung."
+    },
+    {
+      "id": "evt_002",
+      "timestamp": "2026-04-16T14:45:00",
+      "source": "Kathmandu Post",
+      "source_type": "verified_news",
+      "text": "Bridge collapse near Jumla cuts off road access to mountain settlements.",
+      "village_id": "jumla",
+      "severity_score": 0.78,
+      "confidence": 0.75,
+      "keywords": ["collapse"],
+      "multi_source_confirmation": true,
+      "verified": true,
+      "demo_note": "Confidence requires coordinator review before re-optimization."
+    },
+    {
+      "id": "evt_003",
+      "timestamp": "2026-04-16T15:12:00",
+      "source": "@RedCrossNepal",
+      "source_type": "verified_ngo",
+      "text": "Mahendranagar hospital requests immediate medical supplies after flood displacement.",
+      "village_id": "mahendranagar",
+      "severity_score": 0.85,
+      "confidence": 0.88,
+      "keywords": ["critical", "medical"],
+      "multi_source_confirmation": true,
+      "verified": true,
+      "demo_note": "High-confidence report triggers automatic plan generation."
+    },
+    {
+      "id": "evt_004",
+      "timestamp": "2026-04-16T15:45:00",
+      "source": "@RandomUser123",
+      "source_type": "unverified",
+      "text": "Heard there might be an issue around Bharatpur. No details available.",
+      "village_id": "bharatpur",
+      "severity_score": 0.30,
+      "confidence": 0.25,
+      "keywords": [],
+      "multi_source_confirmation": false,
+      "verified": false,
+      "demo_note": "Low-confidence report is logged without triggering optimization."
+    },
+    {
+      "id": "evt_005",
+      "timestamp": "2026-04-16T16:10:00",
+      "source": "NDRRMA",
+      "source_type": "verified_government",
+      "text": "Flash flood warning issued for Janakpur and Dharan. Rescue teams are mobilizing.",
+      "village_id": "janakpur",
+      "severity_score": 0.80,
+      "confidence": 0.90,
+      "keywords": ["casualties", "critical"],
+      "multi_source_confirmation": true,
+      "verified": true,
+      "demo_note": "Demonstrates concurrent incidents across multiple provinces."
+    }
+  ]
+}

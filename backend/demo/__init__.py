@@ -1,0 +1,1 @@
+# backend/demo package — simulation and orchestration helpers (Prompt 5.1)

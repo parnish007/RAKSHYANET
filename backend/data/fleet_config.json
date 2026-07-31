@@ -1,0 +1,87 @@
+{
+  "helicopters": [
+    {
+      "id": "heli_1",
+      "name": "Rescue Eagle 1",
+      "capacity_kg": 500,
+      "speed_kmh": 200,
+      "fuel_hours": 4.5,
+      "terrain_capability": "any",
+      "current_location": {"lat": 27.7172, "lng": 85.3240}
+    },
+    {
+      "id": "heli_2",
+      "name": "Rescue Eagle 2",
+      "capacity_kg": 500,
+      "speed_kmh": 200,
+      "fuel_hours": 4.5,
+      "terrain_capability": "any",
+      "current_location": {"lat": 27.7172, "lng": 85.3240}
+    },
+    {
+      "id": "heli_3",
+      "name": "Rescue Eagle 3",
+      "capacity_kg": 500,
+      "speed_kmh": 200,
+      "fuel_hours": 4.5,
+      "terrain_capability": "any",
+      "current_location": {"lat": 27.7172, "lng": 85.3240}
+    },
+    {
+      "id": "heli_4",
+      "name": "Rescue Eagle 4",
+      "capacity_kg": 500,
+      "speed_kmh": 200,
+      "fuel_hours": 4.5,
+      "terrain_capability": "any",
+      "current_location": {"lat": 27.7172, "lng": 85.3240}
+    }
+  ],
+  "trucks": [
+    {
+      "id": "truck_1",
+      "name": "Relief Truck Alpha",
+      "capacity_kg": 2000,
+      "speed_kmh": 40,
+      "fuel_hours": 50.0,
+      "terrain_capability": "roads_only",
+      "current_location": {"lat": 27.7172, "lng": 85.3240}
+    },
+    {
+      "id": "truck_2",
+      "name": "Relief Truck Beta",
+      "capacity_kg": 2000,
+      "speed_kmh": 40,
+      "fuel_hours": 50.0,
+      "terrain_capability": "roads_only",
+      "current_location": {"lat": 27.7172, "lng": 85.3240}
+    },
+    {
+      "id": "truck_3",
+      "name": "Relief Truck Gamma",
+      "capacity_kg": 2000,
+      "speed_kmh": 40,
+      "fuel_hours": 50.0,
+      "terrain_capability": "roads_only",
+      "current_location": {"lat": 27.7172, "lng": 85.3240}
+    },
+    {
+      "id": "truck_4",
+      "name": "Relief Truck Delta",
+      "capacity_kg": 2000,
+      "speed_kmh": 40,
+      "fuel_hours": 50.0,
+      "terrain_capability": "roads_only",
+      "current_location": {"lat": 27.7172, "lng": 85.3240}
+    },
+    {
+      "id": "truck_5",
+      "name": "Relief Truck Epsilon",
+      "capacity_kg": 2000,
+      "speed_kmh": 40,
+      "fuel_hours": 50.0,
+      "terrain_capability": "roads_only",
+      "current_location": {"lat": 27.7172, "lng": 85.3240}
+    }
+  ]
+}

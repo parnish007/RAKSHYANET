@@ -1,0 +1,152 @@
+{
+  "notice": "Real Sentinel-2 RGB patches from the EuroSAT benchmark (Helber et al.), bound to Nepali corridors for demonstration. These tiles are NOT imagery of the named corridor.",
+  "acquired_at_note": "acquired_at values are demonstration-scenario timestamps used to drive freshness arithmetic. The underlying EuroSAT patches were captured by Sentinel-2 over Europe in 2017-2018, not over Nepal on these dates.",
+  "dataset": "EuroSAT RGB",
+  "dataset_url": "https://github.com/phelber/EuroSAT",
+  "tiles": [
+    {
+      "tile_id": "nepal-corridor-01",
+      "corridor_id": "east_west_bharatpur_nepalgunj",
+      "file": "nepal-corridor-01.jpg",
+      "reference_label": "Highway",
+      "acquired_at": "2026-07-31T04:12:00+00:00",
+      "sensor": "Sentinel-2 L2A (EuroSAT RGB patch)",
+      "precomputed": {
+        "label": "River",
+        "confidence": 0.9799,
+        "water_like": true,
+        "model_id": "nielsr/vit-finetuned-eurosat-kornia",
+        "device": "cuda",
+        "latency_ms": 19.9
+      }
+    },
+    {
+      "tile_id": "nepal-corridor-02",
+      "corridor_id": "east_west_janakpur_dharan",
+      "file": "nepal-corridor-02.jpg",
+      "reference_label": "Highway",
+      "acquired_at": "2026-07-31T04:18:00+00:00",
+      "sensor": "Sentinel-2 L2A (EuroSAT RGB patch)",
+      "precomputed": {
+        "label": "SeaLake",
+        "confidence": 0.9828,
+        "water_like": true,
+        "model_id": "nielsr/vit-finetuned-eurosat-kornia",
+        "device": "cuda",
+        "latency_ms": 20.4
+      }
+    },
+    {
+      "tile_id": "nepal-corridor-03",
+      "corridor_id": "bp_kathmandu_janakpur",
+      "file": "nepal-corridor-03.jpg",
+      "reference_label": "Highway",
+      "acquired_at": "2026-07-31T04:25:00+00:00",
+      "sensor": "Sentinel-2 L2A (EuroSAT RGB patch)",
+      "precomputed": {
+        "label": "River",
+        "confidence": 0.9802,
+        "water_like": true,
+        "model_id": "nielsr/vit-finetuned-eurosat-kornia",
+        "device": "cuda",
+        "latency_ms": 19.9
+      }
+    },
+    {
+      "tile_id": "nepal-corridor-04",
+      "corridor_id": "prithvi_kathmandu_bharatpur",
+      "file": "nepal-corridor-04.jpg",
+      "reference_label": "Highway",
+      "acquired_at": "2026-07-31T04:31:00+00:00",
+      "sensor": "Sentinel-2 L2A (EuroSAT RGB patch)",
+      "precomputed": {
+        "label": "Highway",
+        "confidence": 0.9802,
+        "water_like": false,
+        "model_id": "nielsr/vit-finetuned-eurosat-kornia",
+        "device": "cuda",
+        "latency_ms": 18.2
+      }
+    },
+    {
+      "tile_id": "nepal-corridor-05",
+      "corridor_id": "prithvi_bharatpur_pokhara",
+      "file": "nepal-corridor-05.jpg",
+      "reference_label": "Highway",
+      "acquired_at": "2026-07-31T04:37:00+00:00",
+      "sensor": "Sentinel-2 L2A (EuroSAT RGB patch)",
+      "precomputed": {
+        "label": "Highway",
+        "confidence": 0.9775,
+        "water_like": false,
+        "model_id": "nielsr/vit-finetuned-eurosat-kornia",
+        "device": "cuda",
+        "latency_ms": 19.2
+      }
+    },
+    {
+      "tile_id": "nepal-corridor-06",
+      "corridor_id": "mid_hill_kathmandu_pokhara",
+      "file": "nepal-corridor-06.jpg",
+      "reference_label": "Residential",
+      "acquired_at": "2026-07-31T04:44:00+00:00",
+      "sensor": "Sentinel-2 L2A (EuroSAT RGB patch)",
+      "precomputed": {
+        "label": "Residential",
+        "confidence": 0.9845,
+        "water_like": false,
+        "model_id": "nielsr/vit-finetuned-eurosat-kornia",
+        "device": "cuda",
+        "latency_ms": 23.2
+      }
+    },
+    {
+      "tile_id": "nepal-corridor-07",
+      "corridor_id": "central_bharatpur_janakpur",
+      "file": "nepal-corridor-07.jpg",
+      "reference_label": "Industrial",
+      "acquired_at": "2026-07-31T04:50:00+00:00",
+      "sensor": "Sentinel-2 L2A (EuroSAT RGB patch)",
+      "precomputed": {
+        "label": "Industrial",
+        "confidence": 0.9813,
+        "water_like": false,
+        "model_id": "nielsr/vit-finetuned-eurosat-kornia",
+        "device": "cuda",
+        "latency_ms": 23.6
+      }
+    },
+    {
+      "tile_id": "nepal-corridor-08",
+      "corridor_id": "east_west_nepalgunj_mahendranagar",
+      "file": "nepal-corridor-08.jpg",
+      "reference_label": "Residential",
+      "acquired_at": "2026-07-31T04:56:00+00:00",
+      "sensor": "Sentinel-2 L2A (EuroSAT RGB patch)",
+      "precomputed": {
+        "label": "Residential",
+        "confidence": 0.9782,
+        "water_like": false,
+        "model_id": "nielsr/vit-finetuned-eurosat-kornia",
+        "device": "cuda",
+        "latency_ms": 20.8
+      }
+    },
+    {
+      "tile_id": "nepal-corridor-09",
+      "corridor_id": "mechi_dharan_taplejung",
+      "file": "nepal-corridor-09.jpg",
+      "reference_label": "Highway",
+      "acquired_at": "2026-07-31T04:55:00+00:00",
+      "sensor": "Sentinel-2 L2A (EuroSAT RGB patch)",
+      "precomputed": {
+        "label": "Highway",
+        "confidence": 0.9811,
+        "water_like": false,
+        "model_id": "nielsr/vit-finetuned-eurosat-kornia",
+        "device": "cuda",
+        "latency_ms": 23.1
+      }
+    }
+  ]
+}

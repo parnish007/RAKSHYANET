@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Self-hosted, latin subset only.
+ *
+ * The deck and the product deliberately do NOT share a typographic strategy.
+ * The deck is editorial and persuasive, so a display serif belongs there. This
+ * is an operations console someone authorises relief dispatch from under time
+ * pressure, and a decorative serif is the wrong instrument for that job.
+ *
+ *   Figtree      — the entire interface: labels, prose, controls, headings.
+ *   Roboto Mono  — every value a reviewer could check against the API:
+ *                  coordinates, ids, distances, ETAs, confidences, JSON,
+ *                  the urgency arithmetic. Mono is the audit signal.
+ *   Fraunces     — one line per screen, the workspace H1, and nothing else.
+ *
+ * Public Sans was carried as a fallback for Figtree. It never rendered — the
+ * fallback during a swap is the system face, not the second webfont — so it was
+ * 27 kB of download for nothing and has been dropped.
+ */
+@font-face {
+  font-family: 'Fraunces Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  /* opsz axis: Fraunces was drawn with optical sizing, and the headline sizes
+     here are exactly where it pays off. */
+  src: url('@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2') format('woff2-variations');
+}
+
+@font-face {
+  font-family: 'Figtree Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 900;
+  src: url('@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2') format('woff2-variations');
+}
+
+@font-face {
+  font-family: 'Roboto Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 700;
+  src: url('@fontsource-variable/roboto-mono/files/roboto-mono-latin-wght-normal.woff2') format('woff2-variations');
+}
+
+:root {
+  --ops-font-display: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman", serif;
+  --ops-font-sans: "Figtree Variable", "Segoe UI Variable", system-ui, sans-serif;
+  --ops-font-mono: "Roboto Mono Variable", ui-monospace, "SFMono-Regular", monospace;
+
+  font-family: var(--ops-font-sans);
+  color: #f1ece7;
+  background: #14100c;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+* { box-sizing: border-box; }
+html, body, #root { width: 100%; min-width: 320px; min-height: 100%; margin: 0; }
+body { background: #14100c; }
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .55; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid #e5dcd3; outline-offset: 2px; }

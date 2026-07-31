@@ -1,0 +1,178 @@
+{
+  "depot": {
+    "id": "depot",
+    "name": "Kathmandu National Logistics Hub",
+    "lat": 27.7172,
+    "lng": 85.3240,
+    "available_resources": {
+      "food": 5000,
+      "water": 3000,
+      "medical_kit": 200,
+      "tarpaulin": 800,
+      "blanket": 1200,
+      "first_aid": 300
+    }
+  },
+  "villages": [
+    {
+      "id": "mahendranagar",
+      "name": "Mahendranagar",
+      "lat": 28.9639,
+      "lng": 80.1772,
+      "population": 8500,
+      "initial_urgency": 0.74,
+      "disaster_impact": 0.76,
+      "terrain_difficulty": 1.2,
+      "has_medical_facility": true,
+      "accessibility": "road",
+      "resource_needs": {
+        "food": {"resource_type": "food", "current_need": 2500, "min_need": 1500, "allocated": 150},
+        "water": {"resource_type": "water", "current_need": 1500, "min_need": 1000, "allocated": 100},
+        "medical_kit": {"resource_type": "medical_kit", "current_need": 50, "min_need": 30, "allocated": 4},
+        "tarpaulin": {"resource_type": "tarpaulin", "current_need": 200, "min_need": 100, "allocated": 10},
+        "blanket": {"resource_type": "blanket", "current_need": 300, "min_need": 150, "allocated": 20},
+        "first_aid": {"resource_type": "first_aid", "current_need": 80, "min_need": 40, "allocated": 5}
+      }
+    },
+    {
+      "id": "jumla",
+      "name": "Jumla",
+      "lat": 29.2747,
+      "lng": 82.1838,
+      "population": 4200,
+      "initial_urgency": 0.81,
+      "disaster_impact": 0.82,
+      "terrain_difficulty": 3.8,
+      "has_medical_facility": false,
+      "accessibility": "dirt_road",
+      "resource_needs": {
+        "food": {"resource_type": "food", "current_need": 2100, "min_need": 1260, "allocated": 0},
+        "water": {"resource_type": "water", "current_need": 1200, "min_need": 840, "allocated": 0},
+        "medical_kit": {"resource_type": "medical_kit", "current_need": 40, "min_need": 24, "allocated": 0},
+        "tarpaulin": {"resource_type": "tarpaulin", "current_need": 160, "min_need": 80, "allocated": 0},
+        "blanket": {"resource_type": "blanket", "current_need": 240, "min_need": 120, "allocated": 0},
+        "first_aid": {"resource_type": "first_aid", "current_need": 65, "min_need": 32, "allocated": 0}
+      }
+    },
+    {
+      "id": "pokhara",
+      "name": "Pokhara",
+      "lat": 28.2096,
+      "lng": 83.9856,
+      "population": 6500,
+      "initial_urgency": 0.68,
+      "disaster_impact": 0.68,
+      "terrain_difficulty": 1.6,
+      "has_medical_facility": true,
+      "accessibility": "road",
+      "resource_needs": {
+        "food": {"resource_type": "food", "current_need": 3250, "min_need": 1950, "allocated": 1250},
+        "water": {"resource_type": "water", "current_need": 1950, "min_need": 1365, "allocated": 800},
+        "medical_kit": {"resource_type": "medical_kit", "current_need": 65, "min_need": 39, "allocated": 24},
+        "tarpaulin": {"resource_type": "tarpaulin", "current_need": 260, "min_need": 130, "allocated": 90},
+        "blanket": {"resource_type": "blanket", "current_need": 390, "min_need": 195, "allocated": 140},
+        "first_aid": {"resource_type": "first_aid", "current_need": 104, "min_need": 52, "allocated": 35}
+      }
+    },
+    {
+      "id": "bharatpur",
+      "name": "Bharatpur",
+      "lat": 27.5291,
+      "lng": 84.3542,
+      "population": 5200,
+      "initial_urgency": 0.48,
+      "disaster_impact": 0.50,
+      "terrain_difficulty": 1.2,
+      "has_medical_facility": true,
+      "accessibility": "road",
+      "resource_needs": {
+        "food": {"resource_type": "food", "current_need": 1400, "min_need": 840, "allocated": 900},
+        "water": {"resource_type": "water", "current_need": 840, "min_need": 588, "allocated": 620},
+        "medical_kit": {"resource_type": "medical_kit", "current_need": 28, "min_need": 17, "allocated": 18},
+        "tarpaulin": {"resource_type": "tarpaulin", "current_need": 112, "min_need": 56, "allocated": 65},
+        "blanket": {"resource_type": "blanket", "current_need": 168, "min_need": 84, "allocated": 90},
+        "first_aid": {"resource_type": "first_aid", "current_need": 45, "min_need": 22, "allocated": 25}
+      }
+    },
+    {
+      "id": "janakpur",
+      "name": "Janakpur",
+      "lat": 26.7288,
+      "lng": 85.9250,
+      "population": 7200,
+      "initial_urgency": 0.72,
+      "disaster_impact": 0.72,
+      "terrain_difficulty": 1.1,
+      "has_medical_facility": false,
+      "accessibility": "road",
+      "resource_needs": {
+        "food": {"resource_type": "food", "current_need": 1750, "min_need": 1050, "allocated": 240},
+        "water": {"resource_type": "water", "current_need": 1050, "min_need": 735, "allocated": 180},
+        "medical_kit": {"resource_type": "medical_kit", "current_need": 35, "min_need": 21, "allocated": 5},
+        "tarpaulin": {"resource_type": "tarpaulin", "current_need": 140, "min_need": 70, "allocated": 18},
+        "blanket": {"resource_type": "blanket", "current_need": 210, "min_need": 105, "allocated": 25},
+        "first_aid": {"resource_type": "first_aid", "current_need": 56, "min_need": 28, "allocated": 6}
+      }
+    },
+    {
+      "id": "dharan",
+      "name": "Dharan",
+      "lat": 26.8065,
+      "lng": 87.2846,
+      "population": 4600,
+      "initial_urgency": 0.64,
+      "disaster_impact": 0.64,
+      "terrain_difficulty": 1.8,
+      "has_medical_facility": true,
+      "accessibility": "road",
+      "resource_needs": {
+        "food": {"resource_type": "food", "current_need": 1100, "min_need": 660, "allocated": 360},
+        "water": {"resource_type": "water", "current_need": 660, "min_need": 462, "allocated": 240},
+        "medical_kit": {"resource_type": "medical_kit", "current_need": 22, "min_need": 13, "allocated": 8},
+        "tarpaulin": {"resource_type": "tarpaulin", "current_need": 88, "min_need": 44, "allocated": 30},
+        "blanket": {"resource_type": "blanket", "current_need": 132, "min_need": 66, "allocated": 45},
+        "first_aid": {"resource_type": "first_aid", "current_need": 35, "min_need": 17, "allocated": 12}
+      }
+    },
+    {
+      "id": "taplejung",
+      "name": "Taplejung",
+      "lat": 27.3520,
+      "lng": 87.6680,
+      "population": 3200,
+      "initial_urgency": 0.88,
+      "disaster_impact": 0.88,
+      "terrain_difficulty": 4.4,
+      "has_medical_facility": false,
+      "accessibility": "dirt_road",
+      "resource_needs": {
+        "food": {"resource_type": "food", "current_need": 1600, "min_need": 960, "allocated": 0},
+        "water": {"resource_type": "water", "current_need": 960, "min_need": 672, "allocated": 0},
+        "medical_kit": {"resource_type": "medical_kit", "current_need": 32, "min_need": 19, "allocated": 0},
+        "tarpaulin": {"resource_type": "tarpaulin", "current_need": 128, "min_need": 64, "allocated": 0},
+        "blanket": {"resource_type": "blanket", "current_need": 192, "min_need": 96, "allocated": 0},
+        "first_aid": {"resource_type": "first_aid", "current_need": 51, "min_need": 25, "allocated": 0}
+      }
+    },
+    {
+      "id": "nepalgunj",
+      "name": "Nepalgunj",
+      "lat": 28.0500,
+      "lng": 81.6167,
+      "population": 5800,
+      "initial_urgency": 0.77,
+      "disaster_impact": 0.79,
+      "terrain_difficulty": 1.1,
+      "has_medical_facility": true,
+      "accessibility": "road",
+      "resource_needs": {
+        "food": {"resource_type": "food", "current_need": 1300, "min_need": 780, "allocated": 80},
+        "water": {"resource_type": "water", "current_need": 780, "min_need": 546, "allocated": 45},
+        "medical_kit": {"resource_type": "medical_kit", "current_need": 26, "min_need": 16, "allocated": 2},
+        "tarpaulin": {"resource_type": "tarpaulin", "current_need": 104, "min_need": 52, "allocated": 5},
+        "blanket": {"resource_type": "blanket", "current_need": 156, "min_need": 78, "allocated": 8},
+        "first_aid": {"resource_type": "first_aid", "current_need": 41, "min_need": 20, "allocated": 3}
+      }
+    }
+  ]
+}

@@ -1,0 +1,537 @@
+/* RakshyaNet deck — Claude Design "Organic" system.
+   Warm ivory ground, terracotta and sage accents, Fraunces over Figtree.
+   Animation is transform/opacity only, so it stays on the compositor. */
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('fonts/Fraunces-Bold.ttf') format('truetype');
+  font-weight: 600 800;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Figtree';
+  src: url('fonts/Figtree-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Figtree';
+  src: url('fonts/Figtree-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Figtree';
+  src: url('fonts/Figtree-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Plex';
+  src: url('fonts/IBMPlexMono-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Plex';
+  src: url('fonts/IBMPlexMono-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-display: block;
+}
+
+:root {
+  --ivory: #efeae0;   /* page ground — warm oat, clearly not white */
+  --sand: #e5ded0;    /* secondary surface */
+  --clay: #d8cfbc;    /* raised surface, gridlines, screenshot mat */
+  --ink: #2a1e17;
+  --muted: #5f4d40;
+  --subtle: #8a7867;  /* darkened: was failing contrast on sand cards */
+  --terra: #c2673b;
+  --ember: #de8a4f;
+  --rust: #8f4426;
+  --sage: #7d8a6a;
+  --good: #6e8c5a;
+  --bad: #a8402c;
+  --shadow: 0 6px 22px rgba(42, 30, 23, 0.13);
+  --shadow-lift: 0 12px 38px rgba(42, 30, 23, 0.20);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #1b1512;
+  font-family: 'Figtree', system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Stage ─────────────────────────────────────────────────────────── */
+#stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  width: 1600px;
+  height: 900px;
+  left: 50%;
+  top: 50%;
+  margin: -450px 0 0 -800px;
+  padding: 74px 88px;
+  background: var(--ivory);
+  /* Paper grain: a single repeating radial, cheap and static. */
+  background-image: url('images/paper.webp');
+  background-size: 560px 560px;
+  background-blend-mode: multiply;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 260ms var(--ease);
+  transform-origin: center center;
+  display: flex;
+  flex-direction: column;
+  /* Guarantees the stacking context that the z-index:-1 horizon band relies
+     on, so the band can never escape behind the slide's own paper ground. */
+  isolation: isolate;
+}
+
+.slide.is-active { opacity: 1; visibility: visible; }
+
+/* ── Type ──────────────────────────────────────────────────────────── */
+h1, h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.015em;
+  line-height: 1.06;
+}
+h1 { font-size: 84px; }
+h2 { font-size: 46px; }
+
+.rule {
+  width: 62px;
+  height: 3px;
+  background: var(--terra);
+  border-radius: 2px;
+  margin-bottom: 20px;
+  transform-origin: left center;
+}
+
+.lead { font-size: 27px; line-height: 1.45; color: var(--muted); max-width: 26ch; }
+p { font-size: 21px; line-height: 1.55; color: var(--muted); max-width: 62ch; margin: 0; }
+.sub { font-size: 20px; color: var(--subtle); margin-top: 14px; }
+.mono { font-family: 'Plex', monospace; font-variant-numeric: tabular-nums; }
+.cap { font-family: 'Plex', monospace; font-size: 15px; color: var(--subtle); }
+strong { color: var(--ink); font-weight: 600; }
+em.q { color: var(--terra); font-style: normal; }
+
+.eyebrow {
+  font-family: 'Plex', monospace;
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rust);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.hd { margin-bottom: 34px; }
+.hd h2 + p { margin-top: 16px; }
+
+/* ── Layout helpers ────────────────────────────────────────────────── */
+.body { flex: 1; min-height: 0; display: flex; gap: 46px; }
+.body.col { flex-direction: column; }
+.grow { flex: 1; min-width: 0; min-height: 0; }
+.rail { width: 400px; flex: 0 0 400px; display: flex; flex-direction: column; gap: 20px; }
+.center { justify-content: center; align-items: center; text-align: center; }
+
+.card {
+  background: var(--sand);
+  border-radius: 13px;
+  padding: 22px 26px;
+  box-shadow: var(--shadow);
+}
+.card.plain { background: transparent; box-shadow: none; padding: 0; }
+.card.note { background: var(--clay); }
+.card.rust { border-left: 4px solid var(--rust); }
+
+ul { margin: 0; padding-left: 22px; }
+li { font-size: 20px; line-height: 1.6; color: var(--muted); margin-bottom: 8px; }
+li strong { color: var(--ink); }
+
+/* ── Screenshot specimen: dark capture on cream ─────────────────────── */
+.shot {
+  background: var(--clay);
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lift);
+  display: inline-block;
+  max-width: 100%;
+  min-height: 0;
+}
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid rgba(46, 32, 25, 0.12);
+}
+.shot.fit { display: flex; flex-direction: column; align-self: flex-start; max-height: 100%; min-height: 0; }
+.shot.fit img { width: 100%; height: auto; max-height: 100%; object-fit: contain; object-position: top center; }
+figure { margin: 0; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+figcaption { font-family: 'Plex', monospace; font-size: 15px; color: var(--subtle); }
+
+.placeholder {
+  border: 2px dashed var(--clay);
+  border-radius: 12px;
+  background: var(--sand);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 30px;
+  min-height: 190px;
+}
+.placeholder span { font-family: 'Plex', monospace; font-size: 14px; color: var(--subtle); }
+
+/* ── Reveal choreography: keyed off .is-active ──────────────────────── */
+.slide [data-r] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 460ms var(--ease), transform 460ms var(--ease);
+}
+.slide.is-active [data-r] { opacity: 1; transform: none; }
+.slide.is-active [data-r='1'] { transition-delay: 60ms; }
+.slide.is-active [data-r='2'] { transition-delay: 150ms; }
+.slide.is-active [data-r='3'] { transition-delay: 240ms; }
+.slide.is-active [data-r='4'] { transition-delay: 330ms; }
+.slide.is-active [data-r='5'] { transition-delay: 420ms; }
+.slide.is-active [data-r='6'] { transition-delay: 510ms; }
+
+.slide .rule { transform: scaleX(0); transition: transform 520ms var(--ease); }
+.slide.is-active .rule { transform: scaleX(1); }
+
+/* ── SVG figure animation ──────────────────────────────────────────── */
+.fig { width: 100%; height: 100%; display: block; overflow: visible; }
+.fig text { font-family: 'Figtree', sans-serif; fill: var(--muted); }
+.fig text.m { font-family: 'Plex', monospace; }
+.fig text.t { font-family: 'Fraunces', serif; fill: var(--ink); }
+
+/* Line draw */
+.draw {
+  stroke-dasharray: var(--len, 2000);
+  stroke-dashoffset: var(--len, 2000);
+  transition: stroke-dashoffset 1100ms var(--ease);
+}
+.is-active .draw { stroke-dashoffset: 0; }
+.is-active .draw.d1 { transition-delay: 200ms; }
+.is-active .draw.d2 { transition-delay: 420ms; }
+.is-active .draw.d3 { transition-delay: 640ms; }
+
+/* Grow horizontally from the left */
+.bar { transform: scaleX(0); transform-origin: left center; transition: transform 780ms var(--ease); }
+.is-active .bar { transform: scaleX(1); }
+.is-active .bar.b1 { transition-delay: 260ms; }
+.is-active .bar.b2 { transition-delay: 640ms; }
+
+/* Pop in */
+.pop { opacity: 0; transform: scale(0.72); transform-origin: center; transition: opacity 420ms var(--ease), transform 420ms var(--ease); }
+.is-active .pop { opacity: 1; transform: scale(1); }
+.is-active .pop.p1 { transition-delay: 900ms; }
+.is-active .pop.p2 { transition-delay: 1250ms; }
+
+.fade { opacity: 0; transition: opacity 520ms var(--ease); }
+.is-active .fade { opacity: 1; }
+.is-active .fade.f1 { transition-delay: 700ms; }
+.is-active .fade.f2 { transition-delay: 1000ms; }
+.is-active .fade.f3 { transition-delay: 1300ms; }
+.is-active .fade.f4 { transition-delay: 1600ms; }
+
+.area { opacity: 0; transition: opacity 900ms var(--ease) 500ms; }
+.is-active .area { opacity: 1; }
+
+/* Slow pulse on the closed corridor, once the draw has landed */
+@keyframes shut { 0%,100% { opacity: 1; } 50% { opacity: 0.42; } }
+.is-active .closed { animation: shut 2.4s ease-in-out 1400ms infinite; }
+
+/* ── Chrome ────────────────────────────────────────────────────────── */
+#chrome {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: rgba(251, 246, 238, 0.92);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  font-family: 'Plex', monospace;
+  font-size: 13px;
+  color: var(--muted);
+  z-index: 50;
+  opacity: 0.28;
+  transition: opacity 200ms var(--ease);
+}
+#chrome:hover { opacity: 1; }
+#chrome button {
+  border: 0; background: var(--clay); color: var(--ink);
+  width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+  font-size: 14px; line-height: 1;
+}
+#bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--terra); z-index: 60; transition: width 260ms var(--ease); }
+
+@media print { #chrome, #bar { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .slide [data-r], .slide .rule, .draw, .bar, .pop, .fade, .area, .tl {
+    transition: none !important; opacity: 1 !important; transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .is-active .closed, .tl .caret { animation: none; }
+}
+
+
+/* ── Supplied artwork ─────────────────────────────────────────────────── */
+.slide.art {
+  background-image:
+    linear-gradient(
+      104deg,
+      var(--ivory) 0%,
+      var(--ivory) 40%,
+      color-mix(in oklab, var(--ivory) 72%, transparent) 66%,
+      color-mix(in oklab, var(--ivory) 30%, transparent) 100%
+    ),
+    url('images/title-bg.webp');
+  background-size: cover, cover;
+  background-position: center, right center;
+  background-blend-mode: normal, normal;
+}
+
+/* ── Terrain horizon band ───────────────────────────────────────────────
+   images/terrain.webp is a wide hand-drawn contour ridge on a transparent
+   ground; the ink occupies rows 378–685 of the 1200px source, so it is a
+   horizon, not a picture. It is used deliberately and only twice: slide 2
+   (the valleys the supplies did not reach) and slide 10 (the terrain model
+   itself). It sits at z-index -1 inside the slide's own stacking context, so
+   it takes no part in layout and can never paint over type — and on both
+   slides the lowest line of type has been measured to sit above the crest.
+
+   `--horizon-top` is the slide-y of the ridge crest; the band runs from there
+   to the bottom edge and no further, so it can never make the stage scroll.
+   The band is a real element rather than a pseudo-element because a
+   pseudo-element's background box does not resolve predictably against a
+   padded, transformed slide — this way the geometry is measurable. */
+.horizon-band {
+  /* An absolutely positioned child of .slide resolves against its *border*
+     box, not its padding box — verified in the browser — so these offsets are
+     already slide coordinates and the band bleeds past the 88px side padding
+     without any correction. */
+  position: absolute;
+  left: 0;
+  top: var(--horizon-top, 700px);
+  width: 1600px;
+  height: calc(900px - var(--horizon-top, 700px));
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: var(--horizon-a, 0.34);
+}
+/* The drawn ink occupies rows 378–685 of the 1200px source. Lifting the image
+   by 336px of its 1067px rendered height puts the first contour exactly on the
+   band's top edge, so `--horizon-top` means what it says. */
+.horizon-band::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -336px;
+  width: 1600px;
+  height: 1067px;
+  background: url('images/terrain.webp') no-repeat 0 0 / 1600px 1067px;
+}
+
+
+/* Specimen-led slides: shrink the rail so the dark capture is the subject and
+   its text lands large enough to read from the back of a room. */
+.slide[data-narrow] .rail { width: 350px; flex: 0 0 350px; }
+.slide[data-narrow] li { font-size: 19px; }
+.slide[data-narrow] .card p { font-size: 18px; }
+
+/* The logo is a dark badge. On a warm ground it needs a shadow so it reads as an
+   object resting on paper rather than a PNG dropped on top of it. */
+.slide.art img[src$="logo.png"] {
+  filter: drop-shadow(0 8px 20px rgba(42, 30, 23, 0.30));
+}
+
+
+/* Terminal specimen for typeset verbatim model output. Same dark treatment as a
+   screenshot so it reads as captured material, but as real text it stays crisp
+   and sized for the room. */
+.term {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #14100d;
+  box-shadow: var(--shadow-lift);
+  border: 1px solid rgba(42, 30, 23, 0.20);
+}
+.term-bar {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  background: #1d1813;
+  border-bottom: 1px solid rgba(216, 207, 188, 0.14);
+}
+.term-bar span { font-size: 12px; color: #d07f3c; letter-spacing: 0.10em; text-transform: uppercase; }
+.term-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 20px 24px;
+  overflow: hidden;
+  font-family: 'Plex', monospace;
+  font-size: 15.5px;
+  line-height: 1.62;
+  color: #cfc6b6;
+  white-space: pre-wrap;
+}
+.term-body b { color: #f0eae0; font-weight: 600; }
+.term-body em { color: #e0a06a; font-style: normal; }
+
+/* ── Terminal call trace: lines stream in, colour-coded by actor ───────── */
+.term.trace { height: 100%; }
+.term.trace .term-body {
+  font-size: 19px;
+  line-height: 1.42;
+  padding: 12px 26px 10px;
+  white-space: normal;
+}
+.term.trace .term-bar { display: flex; justify-content: space-between; align-items: center; }
+.term.trace .term-bar em { font-style: normal; color: #8d8272; letter-spacing: 0.08em; font-size: 12px; }
+
+.tl {
+  display: block;
+  white-space: pre;
+  opacity: 0;
+  transform: translateY(7px);
+  transition: opacity 300ms var(--ease), transform 300ms var(--ease);
+  transition-delay: calc(var(--i, 0) * 105ms + 320ms);
+}
+.is-active .tl { opacity: 1; transform: none; }
+.tl.sp { height: 0.62em; }
+
+/* Actors. Terracotta is Gemma, sage is the engine, rust is the human — the
+   same mapping the diagrams use, so the colours mean one thing in this deck. */
+.tl .a { color: #e0a06a; }            /* Gemma speaking */
+.tl .fn { color: #f4efe4; font-weight: 600; }
+.tl .k { color: #b3a894; }            /* argument names */
+.tl .v { color: #d8cfbc; }            /* argument values */
+.tl .ret { color: #a8bd8c; }          /* what came back */
+.tl .why { color: #e08b64; }          /* the conditional, and the guard */
+.tl .dim { color: #857a6a; }
+
+.tl .caret {
+  display: inline-block;
+  width: 9px; height: 1.05em;
+  vertical-align: -0.18em;
+  background: #e0a06a;
+  animation: blink 1.05s steps(1) infinite;
+}
+@keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+
+/* ── Title hero ─────────────────────────────────────────────────────────── */
+.hero-slide { overflow: hidden; }
+.hero-canvas { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+.hero-canvas canvas {
+  display: block;
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+}
+
+/* Keep the left third readable over the moving field. */
+.hero-slide::after {
+  content: '';
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    var(--ivory) 0%, var(--ivory) 30%,
+    color-mix(in oklab, var(--ivory) 78%, transparent) 54%,
+    color-mix(in oklab, var(--ivory) 22%, transparent) 100%);
+}
+.hero-copy {
+  position: absolute; z-index: 2;
+  left: 88px; top: 50%; transform: translateY(-50%);
+  max-width: 52%;
+}
+.hero-tag {
+  font-family: 'Fraunces', serif;
+  font-size: 30px; line-height: 1.42; color: var(--muted);
+  margin-top: 24px; max-width: none;
+}
+.hero-meta {
+  display: flex; align-items: center; gap: 14px; margin-top: 40px;
+  font-size: 14px; color: var(--rust); letter-spacing: 0.06em;
+}
+.hero-meta i { width: 4px; height: 4px; border-radius: 50%; background: var(--clay); }
+.hero-legend {
+  position: absolute; z-index: 2; right: 88px; bottom: 74px;
+  display: flex; flex-direction: column; gap: 9px; align-items: flex-end;
+  font-size: 14px; color: var(--muted);
+}
+.hero-legend span { display: flex; align-items: center; gap: 9px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.dot.terra { background: var(--terra); }
+.dot.rust { background: var(--rust); }
+
+/* ── Flow: continuous marching dashes, the "something moving" cue ───────── */
+@keyframes flow { to { stroke-dashoffset: -1000; } }
+.is-active .flow {
+  stroke-dasharray: 7 13;
+  animation: flow 22s linear infinite;
+}
+.is-active .flow.slow { animation-duration: 34s; }
+
+/* Signal dots travelling a path */
+@keyframes travel { to { offset-distance: 100%; } }
+.is-active .runner {
+  offset-path: var(--path);
+  animation: travel var(--dur, 4s) linear infinite;
+  animation-delay: var(--lag, 0s);
+}
+
+.foot {
+  margin-top: 12px !important;
+  font-size: 16px !important;
+  color: var(--subtle) !important;
+  max-width: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-active .flow, .is-active .runner { animation: none; }
+}
+
+.slide[data-t="Close"] .body { position: relative; z-index: 2; }
+
+/* Slide 8 runs four stage cards in one column and the routing card carries the
+   NP-hardness admission, which costs two extra lines. Trimming the card padding
+   buys the room without shrinking a single point of type. */
+.slide[data-t="The mathematics"] .grow > .card { padding: 12px 26px; }
+
+/* Figures that are shorter than their panel should sit centred, not float at the
+   top leaving a gap under them. */
+.slide .body.col > .grow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slide .body.col > .grow > .fig { max-height: 100%; }
