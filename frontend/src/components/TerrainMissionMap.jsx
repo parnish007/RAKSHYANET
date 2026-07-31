@@ -1218,7 +1218,12 @@ export default function TerrainMissionMap({
   }, [ready]);
 
   useEffect(() => {
-    if (!containerRef.current || mapRef.current || !depot || !villages.length) return undefined;
+    // The camera is a fixed view of Nepal, so terrain does not need incident
+    // data to draw. Waiting for it meant an unreachable or still-waking backend
+    // produced an empty rectangle where the geospatial twin should be — the map
+    // is the part of this interface that reads as "nothing works" when blank.
+    // Markers and routes attach later, as and when their data arrives.
+    if (!containerRef.current || mapRef.current) return undefined;
 
     const map = new maplibregl.Map({
       container: containerRef.current,
@@ -1841,17 +1846,21 @@ export default function TerrainMissionMap({
         publishHover(null);
       });
 
-      const depotElement = document.createElement('div');
-      depotElement.className = 'terrain-depot-marker';
-      depotElement.title = current.depot.name;
-      depotElement.setAttribute('role', 'img');
-      depotElement.setAttribute('aria-label', `Central depot, ${current.depot.name}`);
-      depotElement.innerHTML = '<span class="terrain-marker-glyph" aria-hidden="true">D</span><b>Central depot</b>';
-      markersRef.current.push(
-        new maplibregl.Marker({ element: depotElement, anchor: 'bottom' })
-          .setLngLat([current.depot.lng, current.depot.lat])
-          .addTo(map),
-      );
+      // Absent until the fleet endpoint answers, which is no longer guaranteed
+      // to have happened by the time the map draws.
+      if (current.depot) {
+        const depotElement = document.createElement('div');
+        depotElement.className = 'terrain-depot-marker';
+        depotElement.title = current.depot.name;
+        depotElement.setAttribute('role', 'img');
+        depotElement.setAttribute('aria-label', `Central depot, ${current.depot.name}`);
+        depotElement.innerHTML = '<span class="terrain-marker-glyph" aria-hidden="true">D</span><b>Central depot</b>';
+        markersRef.current.push(
+          new maplibregl.Marker({ element: depotElement, anchor: 'bottom' })
+            .setLngLat([current.depot.lng, current.depot.lat])
+            .addTo(map),
+        );
+      }
       current.villages.forEach((village) => {
         const markerElement = document.createElement('button');
         markerElement.type = 'button';
@@ -1919,6 +1928,12 @@ export default function TerrainMissionMap({
       setReady(true);
 
       const updateVehiclePositions = () => {
+        // The map is now created as soon as the container exists rather than
+        // waiting for a plan, so the mission-clock effect can reach this before
+        // the style is in place — and after a teardown, when the style is gone
+        // again. getSource() throws in both cases. Positions are recomputed on
+        // the next clock tick, so skipping a call costs nothing.
+        if (!map?.isStyleLoaded?.()) return;
         const timestamp = performance.now();
         const latest = dataRef.current;
         const entries = routeEntriesFromData(latest);
