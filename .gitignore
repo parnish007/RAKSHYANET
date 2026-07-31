@@ -6,6 +6,10 @@
 .env
 .env.*
 !.env.example
+# The one deliberate exception: build-time frontend transport URLs. Vite inlines
+# every VITE_-prefixed value into the public bundle, so this file is only ever
+# allowed to hold things that are already public. Never put a key in it.
+!frontend/.env.production
 
 # ---------------------------------------------------------------------------
 # Python
