@@ -344,7 +344,6 @@ and several of these are things the system could have quietly claimed instead.
 | [docs/gemma-integration.md](docs/gemma-integration.md) | The Gemma boundary in detail |
 | [docs/hitl-safety.md](docs/hitl-safety.md) | Human-in-the-loop safety invariants |
 | [docs/current-limitations.md](docs/current-limitations.md) | Limitations, in full |
-| [docs/CONTEXT.md](docs/CONTEXT.md) | Contributor context: repo map, invariants, truthfulness rules |
 | [docs/QAs.md](docs/QAs.md) | Judge Q&A, including the hard questions |
 | [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md) | Full demo walkthrough |
 | [docs/demo-script.md](docs/demo-script.md) | Short demo click-path |
