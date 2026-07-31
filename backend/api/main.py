@@ -7,6 +7,7 @@ this module is randomly generated.
 from __future__ import annotations
 
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 
@@ -31,9 +32,21 @@ app = FastAPI(
     version="1.1.0",
 )
 
+# The two dev origins are always allowed. A deployed frontend lives on a host
+# this process cannot guess, so CORS_ALLOW_ORIGINS carries it in as a
+# comma-separated list. Preview deployments get a fresh subdomain per push,
+# which is what CORS_ALLOW_ORIGIN_REGEX is for.
+_DEV_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+_extra_origins = [
+    origin.strip().rstrip("/")
+    for origin in os.getenv("CORS_ALLOW_ORIGINS", "").split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[*_DEV_ORIGINS, *_extra_origins],
+    allow_origin_regex=os.getenv("CORS_ALLOW_ORIGIN_REGEX") or None,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

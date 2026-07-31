@@ -115,3 +115,6 @@ docs/CONTEXT.md
 
 # Presenter-only material: kept locally, not published
 VIDEO_SCRIPT.md
+
+# Screen recordings: too large for GitHub (100 MB hard limit).
+*.mp4

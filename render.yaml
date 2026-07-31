@@ -1,0 +1,35 @@
+# Backend deployment. Vercel hosts the frontend; the API cannot go there —
+# it holds run history in process memory and serves a WebSocket, neither of
+# which survives a serverless function.
+#
+# CORS_ALLOW_ORIGINS must be set to the deployed frontend origin after Vercel
+# assigns it. GEMMA_API_KEY* are secrets and are set in the dashboard.
+services:
+  - type: web
+    name: rakshyanet-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.api.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.10.11"
+      - key: GEMMA_PROVIDER
+        value: gemini_api
+      - key: GEMMA_MODEL
+        value: gemma-4-26b-a4b-it
+      - key: GEMMA_TIMEOUT_SECONDS
+        value: "45"
+      # The classifier sidecar needs torch and a GPU; it does not deploy.
+      # Off means the imagery function is simply not declared to Gemma.
+      - key: SATELLITE_TOOL_ENABLED
+        value: "false"
+      - key: CORS_ALLOW_ORIGINS
+        sync: false
+      - key: GEMMA_API_KEY
+        sync: false
+      - key: GEMMA_API_KEY_2
+        sync: false
+      - key: GEMMA_API_KEY_3
+        sync: false
