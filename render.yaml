@@ -21,6 +21,10 @@ services:
         value: gemma-4-26b-a4b-it
       - key: GEMMA_TIMEOUT_SECONDS
         value: "45"
+      # Function-calling makes several round trips and emits reasoning between
+      # them, so it needs a far larger budget than a single extraction call.
+      - key: GEMMA_ORCHESTRATION_TIMEOUT_SECONDS
+        value: "90"
       # The classifier sidecar needs torch and a GPU; it does not deploy.
       # Off means the imagery function is simply not declared to Gemma.
       - key: SATELLITE_TOOL_ENABLED
