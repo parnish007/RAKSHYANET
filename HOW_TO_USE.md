@@ -235,13 +235,17 @@ through a closed corridor is not slower — it cannot be driven.
 
 | | Naive | RakshyaNet |
 |---|---|---|
+| **Executable *ground* routes** | **0 / 5** | **5 / 5** |
 | Routes through the closed corridor | **5** | **0** |
-| Executable routes | **4 / 9** | **9 / 9** |
+| Executable routes, all modes | 4 / 9 | 9 / 9 |
 | Fleet distance | 9,782 km | 10,563 km (+8.0%) |
 | Fleet time | 11,290 min | 12,462 min (+10.4%) |
 
-All five trucks are stranded in the naive plan. RakshyaNet re-plans around the
-closure and keeps every route executable, for 8% more distance.
+Quote the ground row. The all-modes row flatters the naive planner — aircraft fly
+geodesic corridors and a road closure cannot touch them, so every route it keeps
+is a helicopter. Of the roads it planned, none can be driven: all five trucks are
+stranded. RakshyaNet re-plans around the closure and keeps every ground route
+executable, for 8% more distance.
 
 **A measured negative result we report rather than hide:** on this 13-corridor
 network, terrain-difficulty weighting **changes no path at all** — all nine

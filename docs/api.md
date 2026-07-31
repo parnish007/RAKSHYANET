@@ -32,13 +32,38 @@ Compatibility aliases:
 
 - `GET /api/gemma/status`
 - `POST /api/gemma/analyze`
+- `POST /api/gemma/analyze-submitted`
 - `GET /api/gemma/analyses`
 - `GET /api/gemma/analyses/latest`
+- `GET /api/gemma/analyses/{analysis_id}`
+- `POST /api/gemma/analyses/{analysis_id}/questions/{question_id}`
 
 The status response reports requested provider, active provider, hosted-model
-configuration, fallback state, and the last provider error. Analysis responses
-include provenance-tagged evidence, schema-validated extracted values, separate
-model/system confidence, and inspectable decision-trace steps.
+configuration, fallback state, the last provider error, and per-key pool health.
+Analysis responses include provenance-tagged evidence, schema-validated extracted
+values, separate model/system confidence, and inspectable decision-trace steps.
+
+Fetch by id rather than `/latest` when displaying an analysis beside a run. The
+backend retains every analysis and any scenario activation mints a new one, so
+`/latest` and a given run's `analysis_id` diverge routinely — pairing a run with
+the newest analysis instead of its own is how an interface ends up asking for a
+field the displayed plan already has a value for. Route order matters: `/latest`
+is declared before the `{analysis_id}` path so the literal wins.
+
+## Overhead Imagery
+
+Served only when `SATELLITE_TOOL_ENABLED=true`; otherwise these paths 404 and the
+function is never declared to Gemma. Clients should treat a rejected request as
+"the capability is absent" and render nothing rather than an error.
+
+- `GET /api/imagery/status` — enablement, sidecar reachability, tier, tile count,
+  dataset provenance and the authority boundary
+- `GET /api/imagery/corridor/{corridor_id}`
+- `GET /api/imagery/tile/{tile_id}` — the image itself, not JSON
+- `POST /api/imagery/verify`
+
+An imagery record corroborates. It can never, alone, place a corridor in
+`blocked_edge_ids`; that is enforced in validation and covered by a test.
 
 ## Event Envelope
 

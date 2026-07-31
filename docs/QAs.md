@@ -411,19 +411,24 @@ closed corridor is not slower, it is undrivable. Closing
 
 | | Naive | RakshyaNet |
 |---|---|---|
+| **Executable *ground* routes** | **0 / 5** | **5 / 5** |
 | Routes through the closed corridor | 5 | 0 |
-| Executable routes | **4 / 9** | **9 / 9** |
+| Executable routes, all modes | 4 / 9 | 9 / 9 |
 | Fleet distance | 9,782 km | 10,563 km (+8.0%) |
 | Fleet time | 11,290 min | 12,462 min (+10.4%) |
 
-All five trucks are stranded in the naive plan. We keep every route executable for
-8% more distance.
+The ground row is the one to quote, and it is the harsher of the two for the
+naive planner rather than the kinder. Aircraft fly geodesic corridors, so a road
+closure cannot strand them; every route the naive planner keeps is a helicopter.
+Of the roads it planned, none is drivable — all five trucks are stranded. Both
+denominators ship in the API response.
 
 **E3. Isn't 8% more distance a *worse* result?**
 
-Only if you score distance and ignore whether the plan can be executed. Four of
-nine naive routes cannot be driven at all. Paying 8% to keep the plan valid is the
-trade the operator wants; the interface shows both numbers so they can see it.
+Only if you score distance and ignore whether the plan can be executed. Not one
+of the naive planner's five ground routes can be driven. Paying 8% to keep the
+plan valid is the trade the operator wants; the interface shows both numbers so
+they can see it.
 
 **E4. Anything about the baseline that hurts your case?**
 

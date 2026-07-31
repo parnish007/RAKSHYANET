@@ -73,9 +73,9 @@ analysis*, never *a confident wrong number*.
 
 **`UNKNOWN` instead of guessing.** On the bundled evidence `medical_urgency`
 returns `null`, confidence 0, no citations, because no source mentions injuries —
-rendered as a gap with a follow-up question, not a zero. Contradictions are kept
-with **both** claims cited: the system does not pick a winner, because source
-credibility is a human judgement.
+rendered as a gap with a follow-up question, not a zero. Contradictions keep
+**both** claims cited: the system picks no winner, because source credibility is
+a human judgement.
 
 ### 2. Native function calling — Gemma as the operator
 
@@ -102,16 +102,15 @@ delete a usable corridor on contradictory evidence. That turn is recorded verbat
 and replayable.
 
 **The anticipatory behaviour.** One declared imagery trigger is a weather advisory
-implying landslide risk **even though nobody has reported a blockage yet** — the
-model checks a corridor *before* a report exists. Every call records a
-`trigger_reason`, because a precautionary look is a different claim from
-corroborating a filed report.
+implying landslide risk **before anyone reports a blockage** — the model checks a
+corridor *before* a report exists. Each call records a `trigger_reason`, because a
+precautionary look is a different claim from corroborating a filed report.
 
 **Imagery can corroborate a closure. It can never cause one.** A corridor whose
 *only* support is an imagery record is **rejected from `blocked_edge_ids` during
-validation** — in code, with a test. When enabled it is a **land-cover classifier,
-not a flood detector**, on real Sentinel-2 **EuroSAT** patches *bound to Nepali
-corridors for demonstration* — not live imagery of them. No accuracy is claimed.
+validation** — in code, with a test. It is a **land-cover classifier, not a flood
+detector**, on real Sentinel-2 **EuroSAT** patches *bound to Nepali corridors for
+demonstration* — not imagery of them. No accuracy is claimed.
 
 ### 3. The deterministic half, and the bound that makes it safe
 
@@ -154,9 +153,9 @@ Four workspaces follow one decision end to end: **Operations** (3D terrain twin,
 incidents, closures), **Gemma evidence** (every field with its confidence,
 citations and `UNKNOWN`s; raw prompt and response one click away), **Math lab**
 (urgency arithmetic, routes, allocation, KKT, baseline), and **Review &
-authorize** — where if a required field is still `UNKNOWN` the interface **names
-it** (*"medical urgency is UNKNOWN"*) and demands a source or a written
-justification before accepting the signature.
+authorize** — where a still-`UNKNOWN` required field is **named aloud**
+(*"medical urgency is UNKNOWN"*) and demands a source or a written justification
+before the signature is accepted.
 
 An **agent console** replays the recorded function-calling turn — verbatim
 reasoning, emitted arguments, what validation accepted and rejected — labelled a
@@ -187,9 +186,9 @@ scenarios are **bundled fixtures**, labelled in-app. No Devanagari evidence yet.
 **1. Making uncertainty survive the whole pipeline.** The easy build averages
 disagreeing reports into one number and loses the disagreement forever. Getting
 `UNKNOWN` treated as first-class — and getting the solver, the UI **and** the
-approval gate to propagate it instead of coercing a default — touched every
-layer. The authorization screen would happily approve a plan with required fields
-still unknown until we made it name them out loud.
+approval gate to propagate it rather than coerce a default — touched every layer.
+The authorization screen would happily approve a plan with required fields still
+unknown until we made it name them out loud.
 
 **2. Gemma's honesty cost us a feature, and we shipped the explanation.** Forcing
 a JSON response MIME type on the extraction call **suppresses the model's thought
@@ -199,8 +198,8 @@ the function-calling turn, where the constraint does not apply.
 
 **3. Enforcing the trust boundary in code, not in a prompt.** Every safeguard
 exists because the first version let Gemma be *persuasive* instead of
-*accountable*. Deciding where the line goes — and making it a validator rather
-than an instruction — took most of the build.
+*accountable*. Making the line a validator rather than an instruction took most
+of the build.
 
 ---
 

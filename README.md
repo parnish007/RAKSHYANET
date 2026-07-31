@@ -79,6 +79,44 @@ curl -s http://127.0.0.1:8000/api/optimization/baseline # naive-baseline compari
 A fuller operator walkthrough — every feature, in the order the interface is
 designed to be used — is in **[HOW_TO_USE.md](HOW_TO_USE.md)**.
 
+### Optional — overhead imagery verification
+
+Off unless `SATELLITE_TOOL_ENABLED=true`, because it needs a second process with
+its own virtualenv so that torch never enters `requirements.txt`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\imagery_sidecar\start.ps1
+```
+
+Wait for `sidecar ready` (~20 s cold), then restart the backend with the flag
+set. With the flag off, the declaration is never sent to Gemma and the endpoints
+404 — see [tools/imagery_sidecar/README.md](tools/imagery_sidecar/README.md).
+
+---
+
+## Deployment
+
+The two halves deploy to different places, and the split is forced rather than
+chosen: the API keeps run history in process memory and serves a WebSocket, so a
+serverless function cannot host it.
+
+| | Where | Config |
+|---|---|---|
+| Frontend | any static host (Vercel: **root directory `frontend`**) | [`frontend/vercel.json`](frontend/vercel.json) |
+| Backend | any host that runs a persistent process (Render, Fly, Railway) | [`render.yaml`](render.yaml) |
+
+Deploy the backend first — the frontend needs its URL at **build** time, because
+Vite inlines `VITE_*` values into the bundle. Setting them after a build changes
+nothing until the next one; committed defaults live in `frontend/.env.production`.
+
+Backend variables: the three `GEMMA_API_KEY*` secrets, and `CORS_ALLOW_ORIGINS`
+set to the deployed frontend origin — without it the browser blocks every
+request before it reaches a route.
+
+The imagery sidecar does not deploy: it needs torch and a GPU. `render.yaml`
+therefore pins `SATELLITE_TOOL_ENABLED=false`, so a hosted instance simply does
+not declare that function.
+
 ---
 
 ## How it works
@@ -180,13 +218,19 @@ a closed corridor is not slower — it cannot be driven.
 
 | | Naive | RakshyaNet |
 |---|---|---|
+| **Executable *ground* routes** | **0 / 5** | **5 / 5** |
 | Routes through the closed corridor | 5 | **0** |
-| Executable routes | 4 / 9 | **9 / 9** |
+| Executable routes, all modes | 4 / 9 | 9 / 9 |
 | Fleet distance | 9,782 km | 10,563 km (+8.0 %) |
 | Fleet time | 11,290 min | 12,462 min (+10.4 %) |
 
-All five trucks are stranded in the naive plan. RakshyaNet re-plans around the
-closure and keeps every route executable, for 8 % more distance.
+**Ground routes are the honest denominator.** The all-modes row flatters the
+naive planner: aircraft fly geodesic corridors and are unaffected by a road
+closure, so every route it keeps is a helicopter. Of the roads it planned,
+**none can be driven** — all five trucks are stranded. RakshyaNet re-plans
+around the closure and keeps every ground route executable, for 8 % more
+distance. Both framings ship in the API response rather than only the
+favourable one.
 
 **A measured negative result we report rather than hide:** on this 13-corridor
 network, terrain-difficulty weighting **changes no path at all** — all nine routes
