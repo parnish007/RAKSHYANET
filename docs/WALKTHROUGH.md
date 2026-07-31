@@ -111,9 +111,10 @@ Click **Gemma evidence** (or press the **Next** button).
 
 **e. Model-orchestrated optimization** — the function-call panel. This is the
 headline.
-> "Two declared functions. Gemma called `list_corridor_status` first — it wanted
-> the real road graph before naming any corridor. Then it called
-> `run_optimization`."
+> "Three functions are declared. Two are sent on every request; the imagery
+> check is only offered when its flag is on, and it is off by default. Gemma
+> called `list_corridor_status` first — it wanted the real road graph before
+> naming any corridor. Then it called `run_optimization`."
 
 Point at the **raw arguments the model produced**.
 > "This is the model's own JSON, before validation. And here's what it chose:
