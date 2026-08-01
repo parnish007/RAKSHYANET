@@ -44,6 +44,8 @@ def test_real_optimization_endpoint_runs_state_manager(client):
     assert run["requires_human_approval"] is True
     assert run["route_feasible"] is True
     assert run["approval_blockers"] == []
+    assert run["analysis_snapshot"]["analysis_id"] == run["analysis_id"]
+    assert run["analysis_snapshot"]["output"]
     assert run["result"]["state"] == "complete"
     assert len(run["result"]["urgency_scores"]) == 8
     assert run["result"]["vrp_solution"]["routes"]
@@ -66,6 +68,9 @@ def test_real_optimization_endpoint_runs_state_manager(client):
         for item in gemma_signal["input_scores"]
     ) >= 1
     assert gemma_signal["calculation"]["resulting_boost"] == gemma_signal["boost"]
+
+    recovered = client.get(f"/api/optimization/runs/{run['run_id']}").json()
+    assert recovered["analysis_snapshot"] == run["analysis_snapshot"]
 
 
 def test_real_run_emits_versioned_reproducible_events(client):

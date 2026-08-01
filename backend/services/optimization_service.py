@@ -157,6 +157,11 @@ class OptimizationService:
         record = OptimizationRunRecord(
             scenario_id=request.scenario_id,
             analysis_id=request.analysis_id,
+            analysis_snapshot=(
+                gemma_analysis.model_dump(mode="json")
+                if gemma_analysis is not None
+                else None
+            ),
             requested_by=request.requested_by,
             blocked_edge_ids=list(request.blocked_edge_ids),
             parent_run_id=request.parent_run_id,

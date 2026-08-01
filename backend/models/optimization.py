@@ -60,6 +60,11 @@ class OptimizationRunRecord(BaseModel):
     scenario_id: str
     correlation_id: str = Field(default_factory=lambda: f"corr_{uuid4().hex[:12]}")
     analysis_id: Optional[str] = None
+    # Serverless instances do not share process memory. Carry the immutable,
+    # schema-validated analysis beside the run that consumed it so a later
+    # browser request never has to pair the plan with whichever analysis a
+    # different warm instance happens to remember.
+    analysis_snapshot: Optional[dict] = None
     requested_by: str
     blocked_edge_ids: List[str] = Field(default_factory=list)
     parent_run_id: Optional[str] = None
