@@ -90,6 +90,13 @@ ui-validation-*.png
 *.log
 
 # ---------------------------------------------------------------------------
+# Vercel CLI local linkage
+# ---------------------------------------------------------------------------
+# Written by `vercel link`. It names the project and org this working copy is
+# attached to, which is machine-local state, not something a clone should adopt.
+.vercel/
+
+# ---------------------------------------------------------------------------
 # Local databases and vector stores
 # ---------------------------------------------------------------------------
 chromadb/
