@@ -2,16 +2,43 @@ const API_BASE = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
   : 'http://localhost:8000/api';
 
+const TRANSPORT_FAILURE_MESSAGE =
+  'The analysis backend could not be reached. This interface is showing the information it already has. A hosted backend can take a moment to wake on the first request.';
+
 async function request(path, options = {}) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`API ${res.status} ${path}: ${text}`);
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      headers: { 'Content-Type': 'application/json', ...options.headers },
+      ...options,
+    });
+  } catch {
+    // A rejected fetch proves only that the browser received no response; it
+    // cannot distinguish a sleeping host from DNS, CORS, or provisioning faults.
+    throw new Error(TRANSPORT_FAILURE_MESSAGE);
   }
-  return res.json();
+  if (!res.ok) {
+    // The API answers failures with FastAPI's {"detail": ...}, and that string is
+    // written for a person: "No completed optimization result is available" says
+    // something true and useful that a generic sentence would erase. It is used
+    // when present, and only replaced when the body is empty or not JSON --
+    // which is the case where the raw text would be markup or a stack.
+    const body = await res.text().catch(() => '');
+    let detail = '';
+    try {
+      detail = String(JSON.parse(body)?.detail ?? '');
+    } catch {
+      detail = '';
+    }
+    throw new Error(
+      `API ${res.status} ${path}: ${detail || 'The analysis backend returned an error response.'}`,
+    );
+  }
+  try {
+    return await res.json();
+  } catch {
+    throw new Error(`Invalid API response ${path}: The analysis backend returned data this interface could not read.`);
+  }
 }
 
 /* Capability discovery.
