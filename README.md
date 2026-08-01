@@ -128,6 +128,25 @@ appearing broken:
 bundle is capped at 250 MB unzipped and scientific wheels are large. `pandas`
 and `pulp` were removed outright — nothing under `backend/` imports them.
 
+[`.python-version`](.python-version) pins 3.12 for the same reason the versions
+are pinned at all: `scipy==1.12.0` publishes no wheel for 3.13, so a newer
+default runtime would send pip to compile it from source and fail the build.
+
+**The timeout budget is deliberate, and it is tight.** Measured end to end:
+
+| | Measured |
+|---|---|
+| Cold start (import, including scipy) | 1.2 s |
+| Deterministic solver alone | **0.12 s** |
+| One grounded extraction (Gemma round trip) | ~12.8 s |
+| Full function-calling orchestration | **~40.7 s** |
+
+Nearly all of it is model latency, not computation — worth knowing before
+optimising the wrong half. Against a 60 s function ceiling that leaves little
+headroom, so the application's own timeouts are set *below* the platform's
+(`GEMMA_ORCHESTRATION_TIMEOUT_SECONDS=50`). A slow model turn then surfaces as a
+handled, explained error instead of an opaque platform 504.
+
 Vite inlines `VITE_*` at **build** time, so changing them in a dashboard does
 nothing until the next build; the committed values in `frontend/.env.production`
 are what actually ship.
