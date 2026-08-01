@@ -4881,42 +4881,95 @@ function HostedBuildNotice() {
   // Only the hosted build is missing anything. Running the same bundle locally
   // against a local backend, both capabilities are present and the notice would
   // be false.
-  if (!import.meta.env.PROD || dismissed) return null;
+  const open = import.meta.env.PROD && !dismissed;
 
-  const dismiss = () => {
+  const dismiss = useCallback(() => {
     try {
       sessionStorage.setItem('rakshyanet.hosted-notice', 'dismissed');
     } catch {
-      /* a browser refusing storage is not a reason to keep the banner up */
+      /* a browser refusing storage is not a reason to trap the reader */
     }
     setDismissed(true);
-  };
+  }, []);
+
+  const dialogRef = useDialogFocus(open, dismiss);
+
+  if (!open) return null;
 
   return (
-    <aside className="ops-hosted-notice" role="status">
-      <Icon name="info" size={18} />
-      <div className="ops-hosted-notice-body">
-        <b>You are looking at the hosted build.</b>
-        <p>
-          RakshyaNet was developed to run locally, where a persistent server keeps a
-          live telemetry connection open and a second local process runs the
-          overhead-imagery classifier on a GPU. Serverless hosting provides neither,
-          so the same code runs here with two capabilities switched off:{' '}
-          <b>the satellite / overhead-imagery check</b>, whose controls are disabled
-          rather than broken, and <b>the live event stream</b>, which is why the agent
-          console shows a recorded turn instead of claiming live frames.
-        </p>
-        <p>
-          Everything else is real: Gemma&rsquo;s grounded extraction with citations and{' '}
-          <code>UNKNOWN</code>s, native function calling, the routing engine, the naive
-          baseline, and the human approval gate. Where the two builds differ, this
-          interface says so on screen rather than simulating the difference away.
-        </p>
-      </div>
-      <button type="button" className="ops-text-button" onClick={dismiss}>
-        Dismiss
-      </button>
-    </aside>
+    // Deliberately not closed by a click on the scrim. A reader who dismisses
+    // this by accident goes on to meet two disabled capabilities with no
+    // explanation, which is the exact misreading it exists to prevent. Escape
+    // still works, so it is an acknowledgement rather than a trap.
+    <div className="ops-overlay centered" role="presentation">
+      <section
+        ref={dialogRef}
+        className="ops-hosted-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="hosted-build-title"
+        tabIndex="-1"
+      >
+        <div className="ops-hosted-dialog-heading">
+          <Icon name="info" size={20} />
+          <div>
+            <span className="ops-eyebrow">Before you start</span>
+            <h2 id="hosted-build-title">You are looking at the hosted build</h2>
+          </div>
+        </div>
+
+        <div className="ops-hosted-dialog-body">
+          <p>
+            RakshyaNet was developed to run <b>locally</b>, where one persistent server
+            holds a live telemetry connection open and a second local process runs the
+            overhead-imagery classifier on a GPU. Serverless hosting provides neither,
+            so the same code runs here with <b>two capabilities switched off</b>.
+          </p>
+
+          <ul className="ops-hosted-dialog-list">
+            <li>
+              <Icon name="public" size={17} />
+              <div>
+                <b>The satellite / overhead-imagery check does not run online.</b>
+                <small>
+                  It needs a CUDA GPU sidecar that cannot be hosted. Its controls are
+                  visibly disabled with an explanation rather than failing when
+                  clicked. This feature works in the local build.
+                </small>
+              </div>
+            </li>
+            <li>
+              <Icon name="radio" size={17} />
+              <div>
+                <b>There is no live event stream.</b>
+                <small>
+                  A serverless function cannot hold a socket open, so the agent console
+                  shows a recorded turn instead of claiming live frames.
+                </small>
+              </div>
+            </li>
+          </ul>
+
+          <p className="ops-hosted-dialog-affirm">
+            <b>Everything else runs for real here:</b> Gemma&rsquo;s grounded extraction
+            with citations and <code>UNKNOWN</code>s, <b>native function calling</b>,
+            the terrain-constrained routing engine, the naive-baseline comparison, and
+            the human approval gate.
+          </p>
+
+          <p className="ops-hosted-dialog-foot">
+            Wherever the two builds differ, this interface says so on screen. Nothing is
+            simulated to cover a missing capability.
+          </p>
+        </div>
+
+        <div className="ops-hosted-dialog-actions">
+          <button type="button" className="ops-button" onClick={dismiss} autoFocus>
+            Continue to the workspace
+          </button>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -5071,10 +5124,21 @@ export default function PremiumApp() {
       // scenario activation mints a new one. Pairing a run with a stranger's
       // analysis is what made the evidence queue demand medical evidence while
       // the math engine displayed a medical value from a different generation.
-      const paired = nextRun?.analysis_id
+      const snapshot = nextRun?.analysis_snapshot;
+      const embedded = (
+        snapshot?.analysis_id === nextRun?.analysis_id
+          ? snapshot
+          : null
+      );
+      const paired = embedded ?? (nextRun?.analysis_id
         ? await api.getGemmaAnalysis(nextRun.analysis_id).catch(() => null)
-        : null;
-      const attached = paired ?? await api.getLatestGemmaAnalysis().catch(() => null);
+        : null);
+      // A missing exact record must stay missing. Falling back to "latest"
+      // would silently place evidence from a different model turn beside this
+      // versioned plan, which is worse than an explicit unavailable state.
+      const attached = paired ?? (!nextRun?.analysis_id
+        ? await api.getLatestGemmaAnalysis().catch(() => null)
+        : null);
       if (attached) mergeAnalysis(attached);
     } catch (requestError) {
       reportFailure(requestError, 'run snapshot', () => loadRun(forceNew));
@@ -5126,7 +5190,8 @@ export default function PremiumApp() {
         requested_by: 'gemma-function-call',
       });
       mergeRun(nextRun);
-      const nextAnalysis = await api.getLatestGemmaAnalysis().catch(() => null);
+      const nextAnalysis = nextRun?.analysis_snapshot
+        ?? await api.getGemmaAnalysis(nextRun?.analysis_id).catch(() => null);
       if (nextAnalysis?.analysis_id === nextRun.analysis_id) {
         mergeAnalysis(nextAnalysis);
       }
@@ -5643,6 +5708,12 @@ export default function PremiumApp() {
   useEffect(() => {
     if (!pairedAnalysisId) return;
     if (analysisRef.current?.analysis_id === pairedAnalysisId) return;
+    const embedded = run?.analysis_snapshot;
+    if (embedded?.analysis_id === pairedAnalysisId) {
+      analysisRef.current = embedded;
+      setAnalysis(embedded);
+      return;
+    }
     let cancelled = false;
     api.getGemmaAnalysis(pairedAnalysisId)
       .then((record) => {
@@ -5654,7 +5725,7 @@ export default function PremiumApp() {
       })
       .catch(() => {});
     return () => { cancelled = true; };
-  }, [pairedAnalysisId]);
+  }, [pairedAnalysisId, run?.analysis_snapshot]);
 
   useEffect(() => {
     const snapshot = reviewDialog?.runSnapshot;

@@ -157,60 +157,116 @@ a {
   clip-path: none;
 }
 
-/* Hosted-build notice — what this deployment cannot do, said on arrival.
-   Amber rather than red: two capabilities are absent by platform constraint,
-   which is information, not a fault. It sits above the sticky header so it
-   reads first and then scrolls away, instead of occupying the chrome. */
-.ops-hosted-notice {
+/* Hosted-build dialog — what this deployment cannot do, before anything else.
+   A banner in the chrome was missable, and a reader who misses it meets two
+   disabled capabilities with no explanation. This asks for one acknowledgement
+   instead. Amber, not red: these are platform constraints, not faults. */
+.ops-hosted-dialog {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 12px;
-  align-items: start;
-  padding: 13px 22px;
-  border-bottom: 1px solid rgba(222, 164, 96, 0.26);
-  color: var(--ops-muted);
-  background: rgba(222, 164, 96, 0.07);
-  font-size: var(--ops-fs-300);
-  line-height: 1.55;
+  gap: 16px;
+  width: min(680px, calc(100vw - 32px));
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding: 24px 26px 22px;
+  border: 1px solid rgba(222, 164, 96, 0.32);
+  border-radius: var(--ops-radius-md, 14px);
+  background: var(--ops-panel, #17120e);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.62);
 }
 
-.ops-hosted-notice > .ops-icon,
-.ops-hosted-notice > span:first-child {
-  margin-top: 2px;
+.ops-hosted-dialog-heading {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.ops-hosted-dialog-heading .ops-icon {
+  margin-top: 3px;
   color: #eccaa4;
 }
 
-.ops-hosted-notice-body {
+.ops-hosted-dialog-heading h2 {
+  margin: 2px 0 0;
+  font-size: var(--ops-fs-600, 1.35rem);
+  line-height: 1.25;
+}
+
+.ops-hosted-dialog-body {
   display: grid;
-  gap: 5px;
-  max-width: 108ch;
+  gap: 13px;
+  color: var(--ops-muted);
+  font-size: var(--ops-fs-300);
+  line-height: 1.6;
 }
 
-.ops-hosted-notice-body b {
-  color: var(--ops-text);
-}
-
-.ops-hosted-notice-body p {
+.ops-hosted-dialog-body p {
   margin: 0;
 }
 
-.ops-hosted-notice code {
+.ops-hosted-dialog-body b {
+  color: var(--ops-text);
+}
+
+.ops-hosted-dialog-body code {
   padding: 1px 4px;
   border-radius: 3px;
-  background: rgba(0, 0, 0, 0.28);
+  background: rgba(0, 0, 0, 0.3);
   font-size: 0.94em;
 }
 
-@media (max-width: 720px) {
-  .ops-hosted-notice {
-    grid-template-columns: auto 1fr;
-    padding: 11px 14px;
+.ops-hosted-dialog-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 13px 14px;
+  border: 1px solid rgba(222, 164, 96, 0.24);
+  border-radius: var(--ops-radius-sm);
+  background: rgba(222, 164, 96, 0.06);
+  list-style: none;
+}
+
+.ops-hosted-dialog-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.ops-hosted-dialog-list .ops-icon {
+  margin-top: 3px;
+  color: #eccaa4;
+}
+
+.ops-hosted-dialog-list small {
+  display: block;
+  margin-top: 2px;
+  color: var(--ops-muted);
+  line-height: 1.5;
+}
+
+.ops-hosted-dialog-affirm {
+  padding-top: 2px;
+}
+
+.ops-hosted-dialog-foot {
+  color: var(--ops-muted);
+  font-size: var(--ops-fs-200, 0.82rem);
+}
+
+.ops-hosted-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 620px) {
+  .ops-hosted-dialog {
+    padding: 19px 16px 17px;
   }
 
-  /* The dismiss control drops under the text rather than squeezing it. */
-  .ops-hosted-notice > .ops-text-button {
-    grid-column: 2;
-    justify-self: start;
+  .ops-hosted-dialog-actions > .ops-button {
+    width: 100%;
+    justify-content: center;
   }
 }
 
