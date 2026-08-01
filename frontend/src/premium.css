@@ -157,6 +157,63 @@ a {
   clip-path: none;
 }
 
+/* Hosted-build notice — what this deployment cannot do, said on arrival.
+   Amber rather than red: two capabilities are absent by platform constraint,
+   which is information, not a fault. It sits above the sticky header so it
+   reads first and then scrolls away, instead of occupying the chrome. */
+.ops-hosted-notice {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: start;
+  padding: 13px 22px;
+  border-bottom: 1px solid rgba(222, 164, 96, 0.26);
+  color: var(--ops-muted);
+  background: rgba(222, 164, 96, 0.07);
+  font-size: var(--ops-fs-300);
+  line-height: 1.55;
+}
+
+.ops-hosted-notice > .ops-icon,
+.ops-hosted-notice > span:first-child {
+  margin-top: 2px;
+  color: #eccaa4;
+}
+
+.ops-hosted-notice-body {
+  display: grid;
+  gap: 5px;
+  max-width: 108ch;
+}
+
+.ops-hosted-notice-body b {
+  color: var(--ops-text);
+}
+
+.ops-hosted-notice-body p {
+  margin: 0;
+}
+
+.ops-hosted-notice code {
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.28);
+  font-size: 0.94em;
+}
+
+@media (max-width: 720px) {
+  .ops-hosted-notice {
+    grid-template-columns: auto 1fr;
+    padding: 11px 14px;
+  }
+
+  /* The dismiss control drops under the text rather than squeezing it. */
+  .ops-hosted-notice > .ops-text-button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
 .ops-header {
   position: sticky;
   z-index: 50;

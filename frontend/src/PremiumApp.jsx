@@ -4857,6 +4857,69 @@ function newerAnalysis(current, incoming) {
     : current;
 }
 
+/* What this deployment cannot do, said on arrival.
+ *
+ * The system was built to run locally, where a persistent server holds a
+ * telemetry socket open and a second process runs the imagery classifier on a
+ * GPU. Serverless hosting provides neither. Both absences are already labelled
+ * at the point of use, but a visitor meets those points several clicks in and
+ * reads an unexplained absence as a broken feature. Naming them once on arrival
+ * costs a dismissible banner and removes that reading.
+ *
+ * Session-scoped rather than permanent: a judge who reloads is still a first
+ * time reader, while someone working through the interface is not told twice.
+ */
+function HostedBuildNotice() {
+  const [dismissed, setDismissed] = useState(() => {
+    try {
+      return sessionStorage.getItem('rakshyanet.hosted-notice') === 'dismissed';
+    } catch {
+      return false;
+    }
+  });
+
+  // Only the hosted build is missing anything. Running the same bundle locally
+  // against a local backend, both capabilities are present and the notice would
+  // be false.
+  if (!import.meta.env.PROD || dismissed) return null;
+
+  const dismiss = () => {
+    try {
+      sessionStorage.setItem('rakshyanet.hosted-notice', 'dismissed');
+    } catch {
+      /* a browser refusing storage is not a reason to keep the banner up */
+    }
+    setDismissed(true);
+  };
+
+  return (
+    <aside className="ops-hosted-notice" role="status">
+      <Icon name="info" size={18} />
+      <div className="ops-hosted-notice-body">
+        <b>You are looking at the hosted build.</b>
+        <p>
+          RakshyaNet was developed to run locally, where a persistent server keeps a
+          live telemetry connection open and a second local process runs the
+          overhead-imagery classifier on a GPU. Serverless hosting provides neither,
+          so the same code runs here with two capabilities switched off:{' '}
+          <b>the satellite / overhead-imagery check</b>, whose controls are disabled
+          rather than broken, and <b>the live event stream</b>, which is why the agent
+          console shows a recorded turn instead of claiming live frames.
+        </p>
+        <p>
+          Everything else is real: Gemma&rsquo;s grounded extraction with citations and{' '}
+          <code>UNKNOWN</code>s, native function calling, the routing engine, the naive
+          baseline, and the human approval gate. Where the two builds differ, this
+          interface says so on screen rather than simulating the difference away.
+        </p>
+      </div>
+      <button type="button" className="ops-text-button" onClick={dismiss}>
+        Dismiss
+      </button>
+    </aside>
+  );
+}
+
 export default function PremiumApp() {
   const [run, setRun] = useState(null);
   const [analysis, setAnalysis] = useState(null);
@@ -5801,6 +5864,7 @@ export default function PremiumApp() {
   return (
     <div className="ops-app" aria-busy={loading}>
       <a className="ops-skip-link" href="#mission-workspace">Skip to operations</a>
+      <HostedBuildNotice />
       <Header
         connected={isConnected}
         transport={transport}

@@ -10,10 +10,34 @@ chooses a vehicle, and never dispatches.
 
 | | |
 |---|---|
+| **Live app** | **<https://rakshyanet.vercel.app>** |
 | **Hackathon** | Build With Gemma: Margadarshan — Kathmandu University Mathematics Students' Club |
 | **Track** | Route Intelligence |
 | **Model** | `gemma-4-26b-a4b-it` (hosted, via the Gemini API) |
 | **Stack** | FastAPI + Pydantic · React + Vite · MapLibre · Three.js · SciPy |
+
+> ### ⚠️ Reading the hosted build
+>
+> RakshyaNet was developed to run **locally**, where one persistent server holds a
+> live telemetry WebSocket open and a second local process — a GPU sidecar — runs
+> the overhead-imagery classifier. Serverless hosting provides neither, so the
+> deployed build runs the same code with **two capabilities switched off**:
+>
+> - **The overhead imagery / satellite check.** It needs a CUDA GPU sidecar that
+>   cannot be hosted. Its controls are visibly disabled with an explanation
+>   rather than failing when clicked. **This is the one feature that does not
+>   run online.** It works in the local build.
+> - **The live event stream.** A serverless function cannot hold a socket open,
+>   so there is no realtime telemetry feed; the agent console labels itself a
+>   replay instead of claiming live frames.
+>
+> Everything else runs for real online: Gemma's grounded extraction with
+> citations and `UNKNOWN`s, **native function calling**, the terrain-constrained
+> routing engine, the naive-baseline comparison, and the human approval gate.
+>
+> Where the two differ, the interface says so on screen. Nothing is simulated to
+> paper over a missing capability — see
+> [Claims this project does not make](#claims-this-project-does-not-make).
 
 ![RakshyaNet mission control — routes over the Nepal terrain twin](docs/dashboard-premium-routes-verified.png)
 
