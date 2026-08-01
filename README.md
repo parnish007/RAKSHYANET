@@ -42,8 +42,9 @@ RakshyaNet is the layer between those reports and that decision.
 Prerequisites: **Python 3.10+** and **Node.js 18+**.
 
 ```bash
-# Install
-python -m pip install -r requirements.txt
+# Install (requirements-dev.txt adds the local server and the test suite on top
+# of requirements.txt, which carries only what the deployed API imports)
+python -m pip install -r requirements-dev.txt
 cd frontend && npm ci && cd ..
 
 # Configure (optional — the system runs without a key, see below)
@@ -96,26 +97,53 @@ set. With the flag off, the declaration is never sent to Gemma and the endpoints
 
 ## Deployment
 
-The two halves deploy to different places, and the split is forced rather than
-chosen: the API keeps run history in process memory and serves a WebSocket, so a
-serverless function cannot host it.
+The live deployment is **two Vercel projects built from this one repository**,
+distinguished only by their root directory:
 
-| | Where | Config |
-|---|---|---|
-| Frontend | any static host (Vercel: **root directory `frontend`**) | [`frontend/vercel.json`](frontend/vercel.json) |
-| Backend | any host that runs a persistent process (Render, Fly, Railway) | [`render.yaml`](render.yaml) |
+| | Root directory | Entrypoint | Host |
+|---|---|---|---|
+| Frontend | `frontend` | [`frontend/vercel.json`](frontend/vercel.json) | <https://rakshyanet.vercel.app> |
+| API | repository root | [`api/index.py`](api/index.py) → `backend.api.main:app` | <https://rakshyanet-api.vercel.app> |
 
-Deploy the backend first — the frontend needs its URL at **build** time, because
-Vite inlines `VITE_*` values into the bundle. Setting them after a build changes
-nothing until the next one; committed defaults live in `frontend/.env.production`.
+`vercel.json` routes every path to the ASGI app with `routes`/`dest` rather than
+`rewrites`. The distinction is load-bearing: a rewrite hands the function the
+*destination* path, so FastAPI would receive `/api/index` and 404 on endpoints
+that are perfectly well formed. `routes` preserves the caller's path.
 
-Backend variables: the three `GEMMA_API_KEY*` secrets, and `CORS_ALLOW_ORIGINS`
-set to the deployed frontend origin — without it the browser blocks every
-request before it reaches a route.
+**What running serverless costs, stated plainly.** Two capabilities present
+locally are absent in the hosted build, and the interface says so rather than
+appearing broken:
 
-The imagery sidecar does not deploy: it needs torch and a GPU. `render.yaml`
-therefore pins `SATELLITE_TOOL_ENABLED=false`, so a hosted instance simply does
-not declare that function.
+- **No WebSocket.** A serverless function cannot hold a connection open, so
+  there is no live telemetry feed. `frontend/.env.production` therefore sets no
+  `VITE_WS_URL` at all, and the agent console labels itself a replay instead of
+  claiming live frames.
+- **Run history is per-instance.** The API keeps runs in process memory, so a
+  request served by a fresh instance may not see a run created by an earlier
+  one. Re-running the optimization repopulates it. Nothing is silently
+  fabricated — the affected endpoints answer "no completed optimization result
+  is available" rather than inventing one.
+
+`requirements.txt` lists only what the request path imports, because a function
+bundle is capped at 250 MB unzipped and scientific wheels are large. `pandas`
+and `pulp` were removed outright — nothing under `backend/` imports them.
+
+Vite inlines `VITE_*` at **build** time, so changing them in a dashboard does
+nothing until the next build; the committed values in `frontend/.env.production`
+are what actually ship.
+
+The only value that must be set by hand is `GEMMA_API_KEY` on the API project.
+It is deliberately not committed: this repository is public, and a key pushed to
+a public repository is detected and revoked automatically, which would take the
+demo down rather than secure it. `CORS_ALLOW_ORIGINS` is optional — the
+production origin is compiled into the default allow-list.
+
+A persistent-process host remains supported and is the better fit if you want
+the WebSocket: [`render.yaml`](render.yaml) deploys the same app unchanged.
+
+The imagery sidecar does not deploy anywhere: it needs torch and a GPU. Both
+hosted configurations pin `SATELLITE_TOOL_ENABLED=false`, so the function is
+never declared to Gemma and the interface shows the tool as unavailable.
 
 ---
 

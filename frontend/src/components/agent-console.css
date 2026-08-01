@@ -99,6 +99,17 @@
   line-height: 1.45;
 }
 
+.ac-live-notice {
+  margin: 8px 0 0;
+  padding: 10px 11px;
+  border: 1px solid rgba(222, 164, 96, 0.28);
+  border-radius: var(--ops-radius-sm, 5px);
+  color: var(--ops-muted);
+  background: rgba(222, 164, 96, 0.07);
+  font-size: var(--ops-fs-300, 11px);
+  line-height: 1.5;
+}
+
 .ac-live-empty {
   margin: 0;
   padding: 12px;

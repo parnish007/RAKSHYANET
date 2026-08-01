@@ -7508,6 +7508,21 @@ select:focus-visible {
   line-height: 1.55;
 }
 
+.ops-imagery-unavailable {
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(222, 164, 96, 0.28);
+  border-radius: var(--ops-radius-sm);
+  color: var(--ops-muted);
+  background: rgba(222, 164, 96, 0.07);
+  font-size: var(--ops-fs-300);
+  line-height: 1.5;
+}
+
+.ops-imagery > .ops-imagery-unavailable {
+  margin-bottom: 11px;
+}
+
 /* Operator-forced checks, in the incident inspector. */
 .ops-imagery-actions {
   display: grid;
@@ -7552,8 +7567,7 @@ select:focus-visible {
 .ops-imagery-result.unavailable { color: var(--ops-accent-alert); }
 .ops-imagery-result.info { color: var(--ops-muted); }
 
-/* Availability chip in the evidence workspace. Absent whenever the endpoint
-   does not answer — never drawn in an unknown state. */
+/* Availability chip in the evidence workspace. */
 .ops-imagery-status {
   display: flex;
   align-items: center;
@@ -7580,6 +7594,7 @@ select:focus-visible {
 .ops-imagery-status.live { border-color: rgba(116, 170, 90, 0.4); }
 .ops-imagery-status.precomputed { border-color: rgba(222, 164, 96, 0.4); }
 .ops-imagery-status.unavailable { border-color: rgba(208, 97, 80, 0.4); }
+.ops-imagery-status.off { border-color: rgba(222, 164, 96, 0.34); }
 
 /* Why an imagery call fired, above the raw arguments that cannot say it. */
 .ops-call-flags {

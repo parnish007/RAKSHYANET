@@ -16,9 +16,9 @@ async function request(path, options = {}) {
 
 /* Capability discovery.
  *
- * The imagery endpoints are optional: a backend built without the satellite
- * tool simply does not route them. The client used to find that out by calling
- * `/imagery/status` and catching the 404 — which works, but every such probe
+ * Some imagery action endpoints are optional: a backend built without the
+ * satellite tool may not route them. The client used to find that out by
+ * calling an action and catching the 404 — which works, but every such probe
  * leaves a red "Failed to load resource: 404" line in the browser console, and
  * an operations console that logs errors during normal operation has taught its
  * users to ignore errors.
@@ -153,15 +153,9 @@ export const api = {
     }),
 
   // ── Overhead imagery verification ─────────────────────────────
-  // Every one of these 404s unless SATELLITE_TOOL_ENABLED is on, which is the
-  // default. Callers must treat a rejected promise as "the feature is off" and
-  // render nothing, never an error state.
-  getImageryStatus: async () => {
-    if (!(await hasCapability('/api/imagery'))) {
-      throw new Error('imagery capability not served by this backend');
-    }
-    return request('/imagery/status');
-  },
+  // Status is served even when the GPU-backed tool is disabled, so callers can
+  // distinguish an intentionally unavailable feature from a failed action.
+  getImageryStatus: (options = {}) => request('/imagery/status', options),
   // The direct escape hatch: no Gemma round trip, one classifier call, the
   // resulting record appended to the latest analysis.
   verifyCorridorImagery: (corridorId, incidentType, evidenceId = null) =>

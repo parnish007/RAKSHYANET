@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-31T05:29:59.589536+00:00",
+  "timestamp": "2026-08-01T06:21:15.278756+00:00",
   "dataset": {
     "villages": 8,
     "vehicles": 3
@@ -9,10 +9,10 @@
     "per_event_ms": 1000.0
   },
   "operations": {
-    "urgency_calculator_ms": 0.3,
-    "vrp_solver_ms": 0.4,
-    "nash_solver_ms": 0.5,
-    "kkt_verifier_ms": 0.3,
-    "full_pipeline_ms": 4.7
+    "urgency_calculator_ms": 0.1,
+    "vrp_solver_ms": 0.2,
+    "nash_solver_ms": 0.4,
+    "kkt_verifier_ms": 0.2,
+    "full_pipeline_ms": 1.6
   }
 }

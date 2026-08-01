@@ -1,37 +1,38 @@
-# RakshyaNet Backend Dependencies - Minimal for Map Testing
+# RakshyaNet backend -- runtime dependencies.
+#
+# This file is what the deployed serverless function installs, so it lists only
+# what the request path actually imports. Vercel caps a function bundle at
+# 250 MB unzipped and scientific wheels are large, so anything unused here is
+# not merely untidy -- it is a deployment failure waiting to happen.
+#
+# Development and test tooling lives in requirements-dev.txt.
 # Python 3.10+
 
-# Web Framework
+# Web framework (starlette arrives as a fastapi dependency)
 fastapi==0.110.0
-uvicorn[standard]==0.27.0
-websockets==12.0
+pydantic==2.6.4
 python-multipart==0.0.9
 
-# Optimization (for algorithms)
-pulp==2.8.0
+# Outbound calls to the Gemma API
+httpx==0.27.0
+
+# Optimization -- scipy.optimize.minimize backs the social welfare optimizer
 scipy==1.12.0
 numpy==1.26.4
 
-# Routing / Graph
+# Routing / graph
 networkx==3.3
-
-# Data
-pydantic==2.6.4
-pandas==2.2.1
 
 # Utilities
 python-dotenv==1.0.1
-httpx==0.27.0
-aiofiles==23.2.1
 
-# Testing
-pytest==8.0.2
-pytest-asyncio==0.23.5
-pytest-cov==4.1.0
-
-# ===== OPTIONAL DEPENDENCIES (not needed for map) =====
-# Uncomment these when you need them:
-# crewai>=1.14.0  # Updated version for AI agents
-# anthropic==0.30.0  # For LLM
-# chromadb==0.4.22  # For RAG/vector DB
-# sentence-transformers==2.5.1  # For embeddings
+# Deliberately NOT here:
+#   pandas, pulp  -- imported nowhere under backend/; carried over from an
+#                    earlier design, and together they cost ~100 MB of bundle.
+#   uvicorn       -- a local dev server. The platform supplies the ASGI server
+#                    in production. See requirements-dev.txt.
+#   websockets    -- uvicorn's WS transport. A serverless function cannot hold a
+#                    socket open, so the deployed build has no use for it.
+#   aiofiles      -- no longer imported anywhere.
+#   pyserial      -- backend/p2p/bridge_manager.py imports it behind a guarded
+#                    try/except for optional LoRa hardware, absent by design.

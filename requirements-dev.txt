@@ -1,0 +1,21 @@
+# RakshyaNet backend -- development and test dependencies.
+#
+# Everything needed to run the API locally and execute the test suite, on top of
+# the runtime set. Deployment installs requirements.txt only, which is why the
+# local dev server lives here rather than there.
+#
+#   pip install -r requirements-dev.txt
+
+-r requirements.txt
+
+# Local ASGI server. In production the hosting platform provides one, so this is
+# a development tool -- but it is what `uvicorn backend.api.main:app` needs, and
+# the [standard] extra is what supplies the WebSocket transport that the live
+# telemetry feed uses when running locally.
+uvicorn[standard]==0.27.0
+websockets==12.0
+
+# Tests
+pytest==8.0.2
+pytest-asyncio==0.23.5
+pytest-cov==4.1.0

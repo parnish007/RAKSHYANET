@@ -141,12 +141,18 @@ function isFeasibleRoute(route) {
 }
 
 // ── Overhead imagery verification ───────────────────────────────────────────
-// The imagery tool is off by default (SATELLITE_TOOL_ENABLED), so every surface
-// below must be absent rather than empty when the endpoints 404. Nothing here
-// asserts anything the payload does not already carry: the tier badge reads
-// `provider`, and the readout is parsed out of the record's own text, so a
-// record written by a different tier can never be labelled as a live one.
+// The imagery tool depends on a local GPU sidecar that the hosted deployment
+// cannot run. Historical records remain visible, but actions require a positive
+// status response and every unavailable surface explains the local-only limit.
 const IMAGERY_CATEGORY = 'overhead_imagery_analysis';
+const IMAGERY_STATUS_TIMEOUT_MS = 5000;
+const IMAGERY_HOSTED_UNAVAILABLE =
+  'Overhead-imagery verification is unavailable in the hosted demo because it needs a local GPU sidecar. It runs in the local build.';
+const IMAGERY_STATUS_UNAVAILABLE = Object.freeze({
+  enabled: false,
+  sidecar_reachable: false,
+  tile_count: 0,
+});
 
 const IMAGERY_TIERS = {
   local_model_inference: {
@@ -224,22 +230,46 @@ function imageryIncidentType(analysis, corridor) {
 // The claim being tested. Prefer a record that actually mentions the incident,
 // so the check is bound to the report it is checking rather than to a stranger.
 function imageryEvidenceId(analysis, incidentType) {
-  const records = analysis?.evidence ?? [];
+  const records = Array.isArray(analysis?.evidence) ? analysis.evidence : [];
   const matched = records.find((record) =>
     String(record?.text ?? '').toLowerCase().includes(incidentType));
   return (matched ?? records[0])?.evidence_id ?? null;
 }
 
-// `/imagery/status` is the backend's shape, not ours, and it must never render
-// a guess. Anything unrecognisable returns null and the chip is not drawn.
-function imageryStatusChip(status) {
-  if (!status || typeof status !== 'object') return null;
+function imageryActionsAvailable(status) {
+  if (!status || typeof status !== 'object') return false;
   const enabled = status.enabled ?? status.satellite_tool_enabled ?? status.tool_enabled;
-  if (enabled === false) {
+  if (enabled !== true) return false;
+
+  const sidecar = status.sidecar ?? {};
+  const tiles = status.tiles ?? status.tile_count ?? status.precomputed_tiles;
+  const tileCount = Array.isArray(tiles) ? tiles.length : Number(tiles);
+  return sidecar.status === 'ok'
+    || status.sidecar_reachable === true
+    || status.live_available === true
+    || status.tier === 'live'
+    || status.precomputed_available === true
+    || status.tier === 'precomputed'
+    || tileCount > 0;
+}
+
+// `/imagery/status` is the backend's shape, not ours. Unknown or malformed
+// responses fail closed, because enabling a dead verification control is worse
+// than withholding an optional tool.
+function imageryStatusChip(status) {
+  if (!status || typeof status !== 'object') {
     return {
       tone: 'off',
-      label: 'Imagery check disabled',
-      detail: 'SATELLITE_TOOL_ENABLED is off, so Gemma is never offered this tool.',
+      label: 'Checking imagery availability',
+      detail: 'Verification controls stay disabled until the status check completes.',
+    };
+  }
+  const enabled = status.enabled ?? status.satellite_tool_enabled ?? status.tool_enabled;
+  if (enabled !== true) {
+    return {
+      tone: 'off',
+      label: 'Overhead imagery unavailable',
+      detail: IMAGERY_HOSTED_UNAVAILABLE,
     };
   }
   const sidecar = status.sidecar ?? {};
@@ -726,6 +756,7 @@ function useDialogFocus(open, onClose) {
 
 function Header({
   connected,
+  transport = 'connecting',
   loading,
   run,
   analysis,
@@ -773,8 +804,12 @@ function Header({
 
       <div className="ops-header-state" aria-label="System status">
         <span>
-          <StatusDot tone={connected ? 'nominal' : 'critical'} />
-          {connected ? 'Event stream connected' : 'Event stream reconnecting'}
+          <StatusDot tone={connected ? 'nominal' : transport === 'unavailable' ? 'attention' : 'critical'} />
+          {connected
+            ? 'Event stream connected'
+            : transport === 'unavailable'
+              ? 'Hosted event stream unavailable'
+              : 'Event stream reconnecting'}
         </span>
         <span
           className={`ops-header-model ${gemmaRuntimeState(analysis)}`}
@@ -1242,6 +1277,8 @@ function IncidentInspector({
   imageryTarget = null,
   imageryBusy = false,
   imageryResult = null,
+  imageryAvailable = false,
+  imageryAvailabilityNotice = '',
   onAskGemmaImagery,
   onCheckImagery,
 }) {
@@ -1300,13 +1337,21 @@ function IncidentInspector({
       {imageryTarget && (
         <div className="ops-imagery-actions">
           <span className="ops-eyebrow">Overhead check · {imageryTarget.corridorName}</span>
+          {imageryAvailabilityNotice && (
+            <p className="ops-imagery-unavailable" id="imagery-action-availability" role="status">
+              {imageryAvailabilityNotice}
+            </p>
+          )}
           <div className="ops-imagery-buttons">
             <button
               className="ops-button ghost"
               type="button"
               onClick={() => onAskGemmaImagery?.(imageryTarget)}
-              disabled={imageryBusy}
-              title="Gemma emits the tool call itself; the record shows the operator asked."
+              disabled={imageryBusy || !imageryAvailable}
+              aria-describedby={imageryAvailabilityNotice ? 'imagery-action-availability' : undefined}
+              title={imageryAvailable
+                ? 'Gemma emits the tool call itself; the record shows the operator asked.'
+                : imageryAvailabilityNotice}
             >
               <Icon name={imageryBusy ? 'progress_activity' : 'auto_awesome'} size={16} />
               Ask Gemma to verify
@@ -1315,8 +1360,11 @@ function IncidentInspector({
               className="ops-button ghost"
               type="button"
               onClick={() => onCheckImagery?.(imageryTarget)}
-              disabled={imageryBusy}
-              title="Skips the model: one classifier call, record appended directly."
+              disabled={imageryBusy || !imageryAvailable}
+              aria-describedby={imageryAvailabilityNotice ? 'imagery-action-availability' : undefined}
+              title={imageryAvailable
+                ? 'Skips the model: one classifier call, record appended directly.'
+                : imageryAvailabilityNotice}
             >
               <Icon name={imageryBusy ? 'progress_activity' : 'public'} size={16} />
               Check imagery now
@@ -2405,7 +2453,7 @@ function EvidenceCite({ evidenceIds = [], onCite, emptyLabel = 'no cited source'
 // that is not imagery of the named corridor, classified by a model that cannot
 // see water depth. The tile is shown because a judge should see what the model
 // saw — directly above the record's own caveats, never instead of them.
-function ImageryEvidencePanel({ record }) {
+function ImageryEvidencePanel({ record, available = false, availabilityNotice = '' }) {
   const [tileHidden, setTileHidden] = useState(false);
   const tileId = imageryTileId(record);
   const tier = IMAGERY_TIERS[record?.provider] ?? null;
@@ -2413,10 +2461,15 @@ function ImageryEvidencePanel({ record }) {
   const unavailable = record?.provider === 'imagery_check_unavailable';
   // No tile is fetched for an unavailable check: there is nothing behind it, and
   // a request that is known to fail is not worth a broken frame.
-  const showTile = Boolean(tileId) && !tileHidden && !unavailable;
+  const showTile = available && Boolean(tileId) && !tileHidden && !unavailable;
 
   return (
     <div className="ops-imagery">
+      {availabilityNotice && (
+        <p className="ops-imagery-unavailable" role="status">
+          {availabilityNotice}
+        </p>
+      )}
       {showTile && (
         <figure className="ops-imagery-tile">
           <img
@@ -2456,13 +2509,20 @@ function ImageryEvidencePanel({ record }) {
   );
 }
 
-function SourceReportDialog({ request, analysis, onClose }) {
+function SourceReportDialog({
+  request,
+  analysis,
+  imageryAvailable = false,
+  imageryAvailabilityNotice = '',
+  onClose,
+}) {
   const open = Boolean(request);
   const dialogRef = useDialogFocus(open, onClose);
   if (!open) return null;
 
-  const records = analysis?.evidence ?? [];
-  const cited = (request.evidenceIds ?? [])
+  const records = Array.isArray(analysis?.evidence) ? analysis.evidence : [];
+  const evidenceIds = Array.isArray(request?.evidenceIds) ? request.evidenceIds : [];
+  const cited = evidenceIds
     .map((id) => records.find((item) => item.evidence_id === id) ?? { evidence_id: id, missing: true });
   const focusId = request.focusId ?? cited[0]?.evidence_id;
 
@@ -2496,7 +2556,7 @@ function SourceReportDialog({ request, analysis, onClose }) {
         <div className="ops-source-list">
           {cited.map((record) => {
             const imagery = isImageryRecord(record) && !record.missing;
-            const tier = imagery ? IMAGERY_TIERS[record.provider] : null;
+            const tier = imagery ? IMAGERY_TIERS[record?.provider] : null;
             return (
             <article
               key={record.evidence_id}
@@ -2521,7 +2581,13 @@ function SourceReportDialog({ request, analysis, onClose }) {
                 </p>
               ) : (
                 <>
-                  {imagery && <ImageryEvidencePanel record={record} />}
+                  {imagery && (
+                    <ImageryEvidencePanel
+                      record={record}
+                      available={imageryAvailable}
+                      availabilityNotice={imageryAvailabilityNotice}
+                    />
+                  )}
                   <blockquote>{record.text}</blockquote>
                   <dl>
                     <div><dt>Reliability</dt><dd>{percent(record.reliability)}</dd></div>
@@ -4815,8 +4881,8 @@ export default function PremiumApp() {
   const [reviewBusy, setReviewBusy] = useState(false);
   const [dispositionBusy, setDispositionBusy] = useState(false);
   const [orchestrateBusy, setOrchestrateBusy] = useState(false);
-  // Imagery verification is optional and off by default. `imageryStatus` stays
-  // null unless the endpoint answers, and null renders nothing at all.
+  // Null is the short, bounded status-checking state. Any failed or malformed
+  // response is stored as disabled so controls never drift into a dead action.
   const [imageryBusy, setImageryBusy] = useState(false);
   const [imageryResult, setImageryResult] = useState(null);
   const [imageryStatus, setImageryStatus] = useState(null);
@@ -4841,7 +4907,7 @@ export default function PremiumApp() {
   const missionElapsedRef = useRef(0);
   const analysisRef = useRef(null);
   const failedRetryRef = useRef(null);
-  const { messages, isConnected, lastMessage } = useWebSocket();
+  const { messages, isConnected, lastMessage, transport } = useWebSocket();
 
   const mergeRun = useCallback((incoming) => {
     setRun((current) => {
@@ -5011,11 +5077,16 @@ export default function PremiumApp() {
   // ARCH §4 · the two operator paths to the same evidence record. B1 makes Gemma
   // emit the call itself, so the audit shows a real model-emitted tool call that
   // is nonetheless marked operator-directed. B2 skips the model entirely, for
-  // when a forty-second round trip is not available. Both endpoints 404 while
-  // the imagery tool is disabled — the default — and that arrives here as an
-  // ordinary retryable failure rather than a broken screen.
+  // when a forty-second round trip is not available. Both handlers repeat the
+  // status guard so a disabled control cannot be bypassed programmatically.
   const askGemmaForImagery = async (target) => {
-    if (!target?.corridorId || imageryBusy || orchestrateBusy || loading) return;
+    if (
+      !target?.corridorId
+      || !imageryActionsAvailable(imageryStatus)
+      || imageryBusy
+      || orchestrateBusy
+      || loading
+    ) return;
     setImageryBusy(true);
     setImageryResult(null);
     clearFailure();
@@ -5031,7 +5102,7 @@ export default function PremiumApp() {
       });
       mergeRun(nextRun);
       const nextAnalysis = await api.getLatestGemmaAnalysis().catch(() => null);
-      if (nextAnalysis?.analysis_id === nextRun.analysis_id) {
+      if (nextAnalysis?.analysis_id === nextRun?.analysis_id) {
         mergeAnalysis(nextAnalysis);
       }
       setImageryResult({
@@ -5050,7 +5121,12 @@ export default function PremiumApp() {
   };
 
   const checkImageryNow = async (target) => {
-    if (!target?.corridorId || imageryBusy || loading) return;
+    if (
+      !target?.corridorId
+      || !imageryActionsAvailable(imageryStatus)
+      || imageryBusy
+      || loading
+    ) return;
     setImageryBusy(true);
     setImageryResult(null);
     clearFailure();
@@ -5218,7 +5294,6 @@ export default function PremiumApp() {
     setTraceOpen(false);
     setReviewDialog(null);
     setImageryResult(null);
-    setImageryStatus(null);
     setBaseline(null);
     setBaselineError(null);
     setSelectedScenarioId('');
@@ -5667,23 +5742,39 @@ export default function PremiumApp() {
   // a corridor that is no longer the one on screen.
   useEffect(() => setImageryResult(null), [selectedVillageId]);
 
-  // Probed once, and only once the evidence workspace is actually opened, so the
-  // default landing view issues no request for a feature that is normally off.
-  // A rejection means "disabled": nothing is stored, nothing is drawn, nothing
-  // is reported to the operator.
-  // No abort flag: under StrictMode the cleanup runs between the two mount
-  // effects, so cancelling would discard the only response the once-guard allows.
-  // This component is the app root and never unmounts.
-  const imageryProbed = useRef(false);
+  // The operations workspace exposes imagery controls before the evidence view
+  // opens, so availability is resolved at mount. A timeout makes a missing
+  // backend a terminal disabled state instead of an endless pending affordance.
   useEffect(() => {
-    if (activeWorkspace !== 'evidence' || imageryProbed.current) return;
-    imageryProbed.current = true;
-    api.getImageryStatus()
-      .then(setImageryStatus)
-      .catch(() => {});
-  }, [activeWorkspace]);
+    let active = true;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), IMAGERY_STATUS_TIMEOUT_MS);
+
+    api.getImageryStatus({ signal: controller.signal })
+      .then((status) => {
+        if (!active) return;
+        setImageryStatus(status && typeof status === 'object'
+          ? status
+          : IMAGERY_STATUS_UNAVAILABLE);
+      })
+      .catch(() => {
+        if (active) setImageryStatus(IMAGERY_STATUS_UNAVAILABLE);
+      })
+      .finally(() => clearTimeout(timeout));
+
+    return () => {
+      active = false;
+      clearTimeout(timeout);
+      controller.abort();
+    };
+  }, []);
 
   const imageryChip = useMemo(() => imageryStatusChip(imageryStatus), [imageryStatus]);
+  const imageryAvailable = useMemo(
+    () => imageryActionsAvailable(imageryStatus),
+    [imageryStatus],
+  );
+  const imageryAvailabilityNotice = imageryAvailable ? '' : imageryChip.detail;
   const toggleAddMode = useCallback(
     () => setAddMode((current) => !current),
     [],
@@ -5712,6 +5803,7 @@ export default function PremiumApp() {
       <a className="ops-skip-link" href="#mission-workspace">Skip to operations</a>
       <Header
         connected={isConnected}
+        transport={transport}
         loading={loading}
         run={run}
         analysis={analysis}
@@ -5812,6 +5904,8 @@ export default function PremiumApp() {
                 imageryTarget={imageryTarget}
                 imageryBusy={imageryBusy || orchestrateBusy || loading}
                 imageryResult={imageryResult}
+                imageryAvailable={imageryAvailable}
+                imageryAvailabilityNotice={imageryAvailabilityNotice}
                 onAskGemmaImagery={askGemmaForImagery}
                 onCheckImagery={checkImageryNow}
               />
@@ -5826,9 +5920,6 @@ export default function PremiumApp() {
               <h1>Watch the model work, then check what it was allowed to change</h1>
               <p>The console below replays Gemma&rsquo;s function-calling turn line by line. Under it: what the extraction found, what it refused to guess, and the exact numbers handed to the maths.</p>
             </div>
-            {/* Drawn only when /imagery/status answered. If the tool is off the
-                endpoint 404s and this is absent — an operator is never shown a
-                capability chip in an unknown state. */}
             {imageryChip && (
               <div className={`ops-imagery-status ${imageryChip.tone}`} role="status">
                 <StatusDot tone={IMAGERY_CHIP_DOT[imageryChip.tone] ?? 'attention'} />
@@ -5855,6 +5946,7 @@ export default function PremiumApp() {
               currentRunId={run?.run_id}
               run={run}
               messages={messages}
+              transport={transport}
               declaredFunctions={declaredFunctions}
               onOrchestrate={orchestrateWithGemma}
               busy={orchestrateBusy || loading}
@@ -5990,6 +6082,8 @@ export default function PremiumApp() {
       <SourceReportDialog
         request={sourceRequest}
         analysis={analysis}
+        imageryAvailable={imageryAvailable}
+        imageryAvailabilityNotice={imageryAvailabilityNotice}
         onClose={closeSourceReport}
       />
       <ResetDemoDialog

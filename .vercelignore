@@ -1,0 +1,36 @@
+# Files excluded from the API deployment bundle.
+#
+# The whole repository is uploaded before the function is built, and the bundle
+# has a hard size ceiling, so anything the request path never reads is excluded
+# here. The frontend is on the list because it is a separate Vercel project with
+# its own root directory; a copy of it inside the API bundle costs size for
+# nothing.
+#
+# Every root-level entry is written with a leading slash on purpose. Without it
+# these behave like gitignore patterns and match at ANY depth, which would take
+# backend/demo/scenarios/ out of the bundle along with the repository's own
+# demo/ directory -- and the scenario endpoints read those fixtures at runtime.
+
+/frontend/
+/ui_insipration/
+/design-system/
+/backup/
+/conversations/
+/memory/
+/demo/
+/docs/
+/scripts/
+/tools/
+/tmp/
+/.agents/
+/.claude/
+/.pytest_cache/
+
+backend/tests/
+**/__pycache__/
+*.pyc
+
+*.mp4
+*.zip
+.env
+.env.*

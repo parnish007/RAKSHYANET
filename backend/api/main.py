@@ -32,21 +32,29 @@ app = FastAPI(
     version="1.1.0",
 )
 
-# The two dev origins are always allowed. A deployed frontend lives on a host
-# this process cannot guess, so CORS_ALLOW_ORIGINS carries it in as a
-# comma-separated list. Preview deployments get a fresh subdomain per push,
-# which is what CORS_ALLOW_ORIGIN_REGEX is for.
+# The two dev origins are always allowed, and so is the production frontend.
+# Baking that hostname in rather than leaving it to configuration is deliberate:
+# a missing CORS variable does not fail loudly at boot, it fails as a blocked
+# fetch in someone else's browser, which is the worst place to discover it.
+# CORS_ALLOW_ORIGINS still exists to add hosts this build cannot know about.
 _DEV_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+_PROD_ORIGINS = ["https://rakshyanet.vercel.app"]
 _extra_origins = [
     origin.strip().rstrip("/")
     for origin in os.getenv("CORS_ALLOW_ORIGINS", "").split(",")
     if origin.strip()
 ]
 
+# Every Vercel preview deployment gets its own generated subdomain, so they can
+# only be matched by pattern. The anchors matter -- an unanchored pattern would
+# also match a hostname that merely ends in vercel.app, such as an attacker's
+# notrakshyanet.vercel.app.
+_PREVIEW_ORIGIN_PATTERN = r"^https://rakshyanet-[a-z0-9-]+\.vercel\.app$"
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[*_DEV_ORIGINS, *_extra_origins],
-    allow_origin_regex=os.getenv("CORS_ALLOW_ORIGIN_REGEX") or None,
+    allow_origins=[*_DEV_ORIGINS, *_PROD_ORIGINS, *_extra_origins],
+    allow_origin_regex=os.getenv("CORS_ALLOW_ORIGIN_REGEX") or _PREVIEW_ORIGIN_PATTERN,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

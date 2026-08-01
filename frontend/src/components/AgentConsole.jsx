@@ -16,9 +16,9 @@ import './agent-console.css';
    Two data sources sit in this panel and they are deliberately NOT blended,
    because they make different claims:
 
-   (a) LIVE SOCKET — WebSocket frames the backend broadcast during the run.
-       Real events, real server timestamps, printed in arrival order. Nothing
-       here is reconstructed.
+   (a) LIVE SOCKET — when the transport is available, WebSocket frames the
+       backend broadcast during the run. When it is not, the panel says so and
+       makes no realtime claim.
 
    (b) RECORDED EXCHANGE — the OrchestrationRecord returned by
        POST /api/optimization/orchestrate. That endpoint is a *blocking* call:
@@ -94,7 +94,9 @@ function clockOf(value) {
 }
 
 function signatureOf(name, declared) {
-  const schema = declared?.find((entry) => entry?.name === name);
+  const schema = Array.isArray(declared)
+    ? declared.find((entry) => entry?.name === name)
+    : null;
   const params = Object.keys(schema?.parameters?.properties ?? {});
   return `${name}(${params.join(', ')})`;
 }
@@ -105,12 +107,14 @@ function buildTranscript(orchestration, run, declared) {
 
   const lines = [];
   const push = (actor, kind, text, label = null) => {
-    lines.push({ id: `ln-${lines.length}`, actor, kind, text, label });
+    lines.push({ id: `ln-${lines.length}`, actor, kind, text: String(text ?? ''), label });
   };
 
-  const declaredNames = orchestration.declared_functions ?? [];
-  const calls = orchestration.tool_calls ?? [];
-  const reasoning = orchestration.reasoning ?? [];
+  const declaredNames = Array.isArray(orchestration.declared_functions)
+    ? orchestration.declared_functions
+    : [];
+  const calls = Array.isArray(orchestration.tool_calls) ? orchestration.tool_calls : [];
+  const reasoning = Array.isArray(orchestration.reasoning) ? orchestration.reasoning : [];
   // One reasoning segment per tool-calling turn is the normal shape, and the
   // backend appends both in turn order. When the counts match, each segment is
   // provably the deliberation from the same turn as the call below it. When
@@ -129,7 +133,8 @@ function buildTranscript(orchestration, run, declared) {
   });
   push('engine', 'meta', `analysis ${orchestration.analysis_id} opened for this turn`);
 
-  calls.forEach((call, index) => {
+  calls.forEach((entry, index) => {
+    const call = entry ?? {};
     if (paired && reasoning[index]) {
       push('model', 'prose', reasoning[index], `reasoning · turn ${index + 1}`);
     }
@@ -192,11 +197,11 @@ function buildTranscript(orchestration, run, declared) {
   return lines;
 }
 
-function LiveFeed({ messages }) {
+function LiveFeed({ messages, transport }) {
   const printable = useMemo(() => {
     const out = [];
     let iterations = 0;
-    (messages ?? []).forEach((message) => {
+    (Array.isArray(messages) ? messages : []).forEach((message) => {
       if (message?.type === 'proportional_iteration') {
         iterations += 1;
         return;
@@ -223,35 +228,49 @@ function LiveFeed({ messages }) {
     return out.slice(-14);
   }, [messages]);
 
+  const live = transport === 'live';
+  const unavailable = transport === 'unavailable';
+
   return (
     <div className="ac-live">
       <div className="ac-live-head">
         <RadioTower width={13} height={13} strokeWidth={1.9} aria-hidden="true" />
-        <b>Live socket</b>
-        <span>{printable.length} event{printable.length === 1 ? '' : 's'}</span>
+        <b>{unavailable ? 'Live socket unavailable' : 'Live socket'}</b>
+        {live && <span>{printable.length} event{printable.length === 1 ? '' : 's'}</span>}
       </div>
-      <p className="ac-live-note">
-        Real WebSocket frames, printed as they arrived. Server timestamps, no replay.
-      </p>
-      {printable.length === 0 ? (
+      {live ? (
+        <p className="ac-live-note">
+          Real WebSocket frames, printed as they arrived. Server timestamps, no replay.
+        </p>
+      ) : unavailable ? (
+        <p className="ac-live-notice" role="status">
+          Live streaming is not available in the hosted deployment. What is shown
+          alongside this notice is the recorded, replayed turn; no frames are arriving.
+        </p>
+      ) : (
+        <p className="ac-live-empty" role="status">
+          Connecting to the realtime transport. The recorded turn remains available.
+        </p>
+      )}
+      {live && (printable.length === 0 ? (
         <p className="ac-live-empty">No pipeline events on this connection yet.</p>
       ) : (
-        // The live-region attributes sit on a wrapper, not on the <ol>. Putting
-        // role="log" on the list itself replaces its list role, which orphans
-        // every <li> for assistive tech (axe: listitem).
-        <div className="ac-live-region" role="log" aria-live="polite" aria-relevant="additions">
-          <ol className="ac-live-list">
-            {printable.map((event) => (
-              <li key={event.key} data-actor={event.actor}>
-                <span className="ac-live-time">{event.at}</span>
-                <span className="ac-live-actor">{ACTOR_LABEL[event.actor]}</span>
-                <span className="ac-live-text">{event.text}</span>
-                <code>{event.type}</code>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
+          // The live-region attributes sit on a wrapper, not on the <ol>. Putting
+          // role="log" on the list itself replaces its list role, which orphans
+          // every <li> for assistive tech (axe: listitem).
+          <div className="ac-live-region" role="log" aria-live="polite" aria-relevant="additions">
+            <ol className="ac-live-list">
+              {printable.map((event) => (
+                <li key={event.key} data-actor={event.actor}>
+                  <span className="ac-live-time">{event.at}</span>
+                  <span className="ac-live-actor">{ACTOR_LABEL[event.actor]}</span>
+                  <span className="ac-live-text">{event.text}</span>
+                  <code>{event.type}</code>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
     </div>
   );
 }
@@ -262,6 +281,7 @@ export default function AgentConsole({
   currentRunId,
   run,
   messages,
+  transport = 'connecting',
   declaredFunctions,
   onOrchestrate,
   busy,
@@ -370,7 +390,7 @@ export default function AgentConsole({
       </header>
 
       <div className="ac-body">
-        <LiveFeed messages={messages} />
+        <LiveFeed messages={messages} transport={transport} />
 
         <div className="ac-replay">
           <div className="ac-replay-head">
