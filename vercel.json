@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
     "api/index.py": {
-      "maxDuration": 60
+      "maxDuration": 300
     }
   },
   "routes": [
@@ -10,7 +10,7 @@
   ],
   "env": {
     "SATELLITE_TOOL_ENABLED": "false",
-    "GEMMA_ORCHESTRATION_TIMEOUT_SECONDS": "50",
-    "GEMMA_TIMEOUT_SECONDS": "35"
+    "GEMMA_ORCHESTRATION_TIMEOUT_SECONDS": "150",
+    "GEMMA_TIMEOUT_SECONDS": "60"
   }
 }
